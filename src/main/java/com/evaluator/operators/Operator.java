@@ -1,6 +1,12 @@
-package com.evaluator.tokenizer;
+package com.evaluator.operators;
 
-import java.util.*;
+import com.evaluator.tokens.Token;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public enum Operator {
     L_PARENTHESIS     (1, Operator.LEFT_ASSOCIATIVE, "(", "\\("),
@@ -18,12 +24,11 @@ public enum Operator {
 
     ASSIGNMENT   (5, Operator.RIGHT_ASSOCIATIVE, "=", "=");
 
-    public static final int NONE_ASSOCIATIVE  = 0;
     public static final int LEFT_ASSOCIATIVE  = 1;
     public static final int RIGHT_ASSOCIATIVE = 2;
 
-    private static final Map<String, Operator> caseInsensitiveMap = new HashMap<String, Operator>();
-    private static final Map<String, Operator> caseSensitiveMap = new HashMap<String, Operator>();
+    private static final Map<String, Operator> caseInsensitiveMap = new HashMap<>();
+    private static final Map<String, Operator> caseSensitiveMap = new HashMap<>();
 
     static {
         for (Operator operator : values()) {
@@ -76,7 +81,7 @@ public enum Operator {
             regexs.add(operator.regex);
         }
 
-        Collections.sort(regexs, Collections.<String>reverseOrder());
+        regexs.sort(Collections.<String>reverseOrder());
 
         StringBuilder sb = new StringBuilder();
         for (String regex : regexs) {

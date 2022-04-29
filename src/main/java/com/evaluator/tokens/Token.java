@@ -1,11 +1,13 @@
-package com.evaluator.tokenizer;
+package com.evaluator.tokens;
+
+import com.evaluator.operators.Operator;
+import com.evaluator.values.Value;
 
 import java.math.BigDecimal;
 public class Token {
     private final TokenType type;
 
-    private Value value;
-    private Value orgValue;
+    private final Value value;
 
     private final int row;
     private final int column;
@@ -41,14 +43,6 @@ public class Token {
         return getValue() != null ? getValue().asString() : null;
     }
 
-    public void saveOrgValue() {
-        orgValue = new Value(value);
-    }
-
-    public void restoreOrgValue() {
-        value.set(orgValue);
-    }
-
 
     public BigDecimal asNumber() {
         return getValue() != null ? getValue().asNumber() : null;
@@ -77,10 +71,6 @@ public class Token {
 
     public Value getValue() {
         return this.value;
-    }
-
-    public int getArgc() {
-        return argc;
     }
 
     public boolean isConstant() {
@@ -115,10 +105,6 @@ public class Token {
         return TokenType.OPERATOR.equals(type) && Operator.L_PARENTHESIS.equals(op);
     }
 
-    public Token setArgc(int argc) {
-        this.argc = argc;
-        return this;
-    }
 
     public void setText(String text) {
         this.text = text;
@@ -129,7 +115,7 @@ public class Token {
     }
 
 
-    public boolean opEquals(Operator... operators) {
+    public boolean operatorEquals(Operator... operators) {
         boolean result = false;
         if (text != null && operators != null) {
             for (Operator operator : operators) {

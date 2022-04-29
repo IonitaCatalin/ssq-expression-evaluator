@@ -2,12 +2,12 @@ package com.evaluator;
 
 import com.evaluator.exceptions.ParserException;
 import com.evaluator.parser.Parser;
-import com.evaluator.tokenizer.Token;
-import com.evaluator.tokenizer.Value;
+import com.evaluator.tokens.Token;
+import com.evaluator.values.Value;
 
 import java.util.List;
 
-public class Demo {
+public class Main {
 
     static class DemoParser extends Parser {
         private List<Token> infix;
@@ -26,9 +26,9 @@ public class Demo {
         }
 
         @Override
-        public List<Token> toRPN(List<Token> inputTokens) throws ParserException {
+        public List<Token> generateRPN(List<Token> inputTokens) throws ParserException {
             infix = inputTokens;
-            rpn = super.toRPN(inputTokens);
+            rpn = super.generateRPN(inputTokens);
             return rpn;
         }
     }
@@ -59,21 +59,21 @@ public class Demo {
             System.out.println();
 
             List<Token> tokens = parser.getInfix();
-            System.out.println("INPUT (INFIX)");
+            System.out.println("Infixed form:");
             for (Token token : tokens) {
                 System.out.println(token);
             }
             System.out.println();
 
             List<Token> rpn = parser.getPostfix();
-            System.out.println("RPN (POSTFIX)");
+            System.out.println("RPN form:");
             for (Token token : rpn) {
                 System.out.println(token);
             }
             System.out.println();
         }
 
-        System.out.print("RESULT: " + value);
+        System.out.print("The result of evaluating the application" + value);
 
     }
 

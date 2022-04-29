@@ -1,4 +1,4 @@
-package com.evaluator.tokenizer;
+package com.evaluator.values;
 
 import java.math.BigDecimal;
 import java.util.Objects;

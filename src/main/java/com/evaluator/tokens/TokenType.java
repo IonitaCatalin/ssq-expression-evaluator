@@ -1,5 +1,6 @@
-package com.evaluator.tokenizer;
+package com.evaluator.tokens;
 
+import com.evaluator.operators.Operator;
 import com.evaluator.parser.Parser;
 
 import java.util.regex.Matcher;
