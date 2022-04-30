@@ -1,22 +1,22 @@
 package com.evaluator.values;
 
-import java.math.BigDecimal;
+import com.evaluator.types.BigInt;
+import com.evaluator.types.exceptions.InvalidNumberFormatException;
+import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
+
 import java.util.Objects;
 
 public class Value {
 
     private ValueType type = ValueType.UNDEFINED;
-    private BigDecimal valueAsNumber = BigDecimal.ZERO;
+
+    private BigInt valueAsNumber = null;
     private String valueAsString = null;
 
     public Value() {}
 
-    public Value(Object var) {
-        if (var instanceof BigDecimal) {
-            setValue((BigDecimal) var);
-        } else {
-            setValue(null);
-        }
+    public Value(BigInt var) {
+        setValue(var);
     }
 
     public Value(String valueAsString) {
@@ -24,24 +24,25 @@ public class Value {
         this.valueAsNumber = null;
     }
 
-    public Value(Value var) {
+    public Value(Value var)
+            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         set(var);
     }
 
     public final Value clear() {
         this.type = ValueType.UNDEFINED;
-        this.valueAsNumber = BigDecimal.ZERO;
+        this.valueAsNumber = null;
         return this;
     }
 
-    public final void set(Value var) {
+    public final void set(Value var)
+            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         if (var != null) {
             this.type = var.type;
             this.valueAsString = var.valueAsString;
-            this.valueAsNumber = var.valueAsNumber == null ? null : new BigDecimal(var.valueAsNumber.toPlainString());
+            this.valueAsNumber = var.valueAsNumber == null ? null : new BigInt(var.valueAsNumber.toString());
         }
     }
-
 
     public String asString() {
         return this.valueAsString;
@@ -55,12 +56,12 @@ public class Value {
         this.type = type;
     }
 
-    public BigDecimal asNumber() {
+    public BigInt asNumber() {
         return valueAsNumber;
     }
 
 
-    public void setValue(BigDecimal value) {
+    public void setValue(BigInt value) {
         this.valueAsNumber = value;
         setType(ValueType.NUMBER);
     }

@@ -1,8 +1,13 @@
 package com.evaluator;
 
+import com.evaluator.parser.Mode;
 import com.evaluator.parser.exceptions.ParserException;
 import com.evaluator.parser.Parser;
 import com.evaluator.tokens.Token;
+import com.evaluator.types.exceptions.DivisionByZeroException;
+import com.evaluator.types.exceptions.InvalidNumberFormatException;
+import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
+import com.evaluator.types.exceptions.NegativeValueException;
 import com.evaluator.values.Value;
 
 import java.util.List;
@@ -13,7 +18,7 @@ public class Main {
         private List<Token> infix;
         private List<Token> rpn;
 
-        DemoParser() {
+        DemoParser(Mode mode) {
             super();
         }
 
@@ -38,7 +43,11 @@ public class Main {
         System.out.println("usage: Demo \"expression\" [-verbose]");
     }
 
-    public static void main(String[] args) throws ParserException {
+    public static void main(String[] args)
+            throws ParserException,
+            InvalidNumberFormatException,
+            MaximumNumberOfDecimalExceededException,
+            NegativeValueException, DivisionByZeroException {
         boolean verbose = false;
         String expression = null;
         if (args.length == 0) {
@@ -49,7 +58,7 @@ public class Main {
             verbose = args.length > 1 && args[1].toLowerCase().startsWith("-v");
         }
 
-        DemoParser parser = new DemoParser();
+        DemoParser parser = new DemoParser(Mode.INTERACTIVE);
         Value value = parser.evaluate(expression);
 
         System.out.println();

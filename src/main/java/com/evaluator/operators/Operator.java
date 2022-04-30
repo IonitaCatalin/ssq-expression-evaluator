@@ -12,13 +12,9 @@ public enum Operator {
     L_PARENTHESIS     (1, Operator.LEFT_ASSOCIATIVE, "(", "\\("),
     R_PARENTHESIS       (1, Operator.LEFT_ASSOCIATIVE, ")", "\\)"),
 
-    UNARY_MINUS  (2, Operator.RIGHT_ASSOCIATIVE, "!", "!"),
-    UNARY_PLUS   (2, Operator.RIGHT_ASSOCIATIVE, "!!", "!!"),
-
     MULT         (3, Operator.LEFT_ASSOCIATIVE, "*", "\\*"),
     DIV          (3, Operator.LEFT_ASSOCIATIVE, "/", "/"),
-    IDIV         (3, Operator.LEFT_ASSOCIATIVE, "DIV", "div"),
-    MODULUS      (3, Operator.LEFT_ASSOCIATIVE, "MOD", "mod"),
+
     PLUS         (4, Operator.LEFT_ASSOCIATIVE, "+", "\\+"),
     MINUS        (4, Operator.LEFT_ASSOCIATIVE, "-", "-"),
 

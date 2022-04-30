@@ -1,7 +1,6 @@
 package com.evaluator.parser;
 
 public enum Mode {
-    STATIC,
-    EXTERNAL,
+    AUTOMATIC,
     INTERACTIVE,
 }

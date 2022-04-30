@@ -1,9 +1,11 @@
 package com.evaluator.tokens;
 
 import com.evaluator.operators.Operator;
+import com.evaluator.types.BigInt;
+import com.evaluator.types.exceptions.InvalidNumberFormatException;
+import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
 import com.evaluator.values.Value;
 
-import java.math.BigDecimal;
 public class Token {
     private final TokenType type;
 
@@ -11,27 +13,30 @@ public class Token {
 
     private final int row;
     private final int column;
+
     private String text;
 
-    private int argc;
 
-    public Token(TokenType type, String text, int row, int column) {
+    public Token(TokenType type, String text, int row, int column)
+            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         this(type, text, null, row, column);
         Value value = new Value();
         if (type != null) {
             if (TokenType.NUMBER.equals(type)) {
-                value = new Value(new BigDecimal(text));
+                value = new Value(new BigInt(text));
             }
         }
         setValue(value);
 
     }
 
-    public Token(TokenType type, Value value, int row, int column) {
+    public Token(TokenType type, Value value, int row, int column)
+            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         this(type, "VALUE", value, row, column);
     }
 
-    public Token(TokenType type, String text, Value value, int row, int column) {
+    public Token(TokenType type, String text, Value value, int row, int column)
+            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         this.type = type == null ? TokenType.NOMATCH : type;
         this.text = text;
         this.row = row;
@@ -44,7 +49,7 @@ public class Token {
     }
 
 
-    public BigDecimal asNumber() {
+    public BigInt asNumber() {
         return getValue() != null ? getValue().asNumber() : null;
     }
 
@@ -110,7 +115,8 @@ public class Token {
         this.text = text;
     }
 
-    public void setValue(Value value) {
+    public void setValue(Value value)
+            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         this.value.set(value);
     }
 

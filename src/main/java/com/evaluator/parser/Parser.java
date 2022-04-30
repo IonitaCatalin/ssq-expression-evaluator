@@ -1,13 +1,19 @@
 package com.evaluator.parser;
 
 import com.evaluator.operators.Operator;
-import com.evaluator.parser.exceptions.ParserException;
+import com.evaluator.parser.exceptions.*;
+
+import com.evaluator.types.exceptions.DivisionByZeroException;
+import com.evaluator.types.exceptions.InvalidNumberFormatException;
+import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
+import com.evaluator.types.exceptions.NegativeValueException;
 import com.evaluator.values.Value;
 import com.evaluator.values.ValueType;
 import com.evaluator.tokens.Token;
 import com.evaluator.tokens.TokenType;
 
-import java.math.BigDecimal;
+import com.evaluator.types.BigInt;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,7 +34,7 @@ public class Parser {
 
     private int precision = DEFAULT_PRECISION;
 
-    private Mode mode = Mode.STATIC;
+    private Mode mode = Mode.INTERACTIVE;
 
     private boolean sensitive;
 
@@ -38,23 +44,13 @@ public class Parser {
 
     final Map < String, List < Token >> expTokens = new HashMap < > ();
 
-    private ParserException lastException;
-    private String lastExpression;
-
-    private final Map < String, BigDecimal > constants = new HashMap < > ();
+    private final Map<String, BigInt> constants = new HashMap<String, BigInt>();
     private final Map < String, Value > variables = new TreeMap < > ();
 
     public Parser() {
         sensitive = false;
         delimiter = DEFAULT_SPLIT_CHARACTER;
         clearConstants();
-    }
-
-    public void addConstant(String name, BigDecimal value) {
-        if (name != null) {
-            constants.put(sensitive ? name : name.toUpperCase(), value);
-            invalidatePattern();
-        }
     }
 
     public Mode getMode() {
@@ -67,12 +63,10 @@ public class Parser {
 
     public void clearConstants() {
         constants.clear();
-        addConstant("null", null);
-        addConstant("pi", BigDecimal.valueOf(Math.PI));
         invalidatePattern();
     }
 
-    public BigDecimal getConstant(String name) {
+    public BigInt getConstant(String name) {
         return name == null ? null : constants.get(sensitive ? name : name.toUpperCase());
     }
 
@@ -140,66 +134,39 @@ public class Parser {
 
     private boolean isType(Token token, int type) throws ParserException {
         if (!token.isOperator()) {
-            throw new ParserException("error.expected_operator_token",
-                    token.getRow(),
-                    token.getColumn()
-            );
+            throw new ExpectedOperatorException(token.getRow(), token.getColumn());
         }
 
         Operator o = Operator.find(token);
         if (o == null) {
-            throw new ParserException(
-                    "error.operator_not_found",
-                    token.getRow(),
-                    token.getColumn()
-            );
+            throw new OperatorNotFoundException(token.getRow(), token.getColumn());
         }
 
         return o.getAssociation() == type;
     }
 
     private boolean shouldPopToken(Token token, Token topOfStack, boolean caseSensitive) throws ParserException {
-        // Unary minus/plus are handled differently if the top token is the exponentiation operator
         Operator op = Operator.find(token);
-        if (op.inSet(Operator.UNARY_MINUS, Operator.UNARY_PLUS)) {
-            return false;
-        } else {
-            return (this.isType(token, Operator.LEFT_ASSOCIATIVE) && this.compareTokens(token, topOfStack) >= 0) ||
+        return (this.isType(token, Operator.LEFT_ASSOCIATIVE) && this.compareTokens(token, topOfStack) >= 0) ||
                     (this.isType(token, Operator.RIGHT_ASSOCIATIVE) && compareTokens(token, topOfStack) > 0);
-        }
+
     }
 
     private int compareTokens(Token token1, Token token2) throws ParserException {
         if (!token1.isOperator()) {
-            throw new ParserException(
-                    "error.operator_expected",
-                    token1.getRow(),
-                    token1.getColumn()
-            );
+            throw new OperatorExpectedException(token1.getRow(), token1.getColumn());
         } else if (!token2.isOperator()) {
-            throw new ParserException(
-                    "error.operator_expected_at_top",
-                    token1.getRow(),
-                    token1.getColumn()
-            );
+            throw new OperatorExpectedException(token1.getRow(), token1.getColumn());
         }
 
         Operator o1 = Operator.find(token1);
         if (o1 == null) {
-            throw new ParserException(
-                    "error.operator_not_found",
-                    token1.getRow(),
-                    token1.getColumn()
-            );
+            throw new OperatorNotFoundException(token1.getRow(), token1.getColumn());
         }
 
         Operator o2 = Operator.find(token2);
         if (o2 == null) {
-            throw new ParserException(
-                    "error.operator_not_found",
-                    token2.getRow(),
-                    token2.getColumn()
-            );
+            throw new OperatorNotFoundException(token2.getRow(), token2.getColumn());
         }
 
         return o1.getPrecedence() - o2.getPrecedence();
@@ -207,14 +174,6 @@ public class Parser {
 
     public void clearCache() {
         expTokens.clear();
-    }
-
-    public ParserException getLastException() {
-        return lastException;
-    }
-
-    public String getLastExpression() {
-        return lastExpression;
     }
 
     public boolean getCaseSensitive() {
@@ -237,22 +196,25 @@ public class Parser {
         return oldValue;
     }
 
-    public Value evaluate(String source) throws ParserException {
+    public Value evaluate(String source)
+            throws ParserException,
+            InvalidNumberFormatException,
+            MaximumNumberOfDecimalExceededException,
+            NegativeValueException,
+            DivisionByZeroException
+    {
         if (source == null) {
             source = "";
         }
         source += ";";
-        lastException = null;
 
         Value value = new Value("");
-
         String[] expressions = source.split(delimiter + SPLIT_PATTERN);
 
         for (String expression: expressions) {
             if (expression.trim().length() > 0) {
-                List < Token > tokens = expTokens.get(expression);
+                List <Token> tokens = expTokens.get(expression);
                 if (tokens == null) {
-                    lastExpression = expression;
                     tokens = new ArrayList <> ();
                     List < Token > list = tokenize(expression, false);
                     if (list.size() > 0) {
@@ -260,7 +222,6 @@ public class Parser {
                         expTokens.put(expression, tokens);
                     }
                 }
-
                 value = (tokens.size() > 0) ? computeRPN(tokens) : new Value("ERROR: EMPTY EXPRESSION");
             }
         }
@@ -268,7 +229,8 @@ public class Parser {
         return value;
     }
 
-    public List < Token > tokenize(String input, boolean wantWhitespace) throws ParserException {
+    public List < Token > tokenize(String input, boolean wantWhitespace)
+            throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         int offset = 0;
         int row = 1;
 
@@ -303,11 +265,7 @@ public class Parser {
             // Check for invalid tokens in the expression
             for (Token token: tokens) {
                 if (TokenType.NOMATCH.equals(token.getType())) {
-                    throw new ParserException(
-                            "error.invalid_token",
-                            token.getRow(),
-                            token.getColumn()
-                    );
+                    throw new InvalidTokenException(token.getRow(), token.getColumn());
                 }
             }
         }
@@ -317,8 +275,6 @@ public class Parser {
 
     public List <Token> generateRPN(List < Token > inputTokens) throws ParserException {
         List < Token > outputTokens = new ArrayList < > ();
-
-        Token lastToken = null;
         Stack < Token > stack = new Stack < > ();
 
         int count = 0;
@@ -329,37 +285,17 @@ public class Parser {
             } else if (token.operatorEquals(Operator.R_PARENTHESIS)) {
                 count--;
                 if (count < 0) {
-                    throw new ParserException(
-                            "error.missing_parenthesis",
-                            token.getRow(),
-                            token.getColumn()
-                    );
+                    throw new MissingParenthesisException(token.getRow(), token.getColumn());
                 }
             }
         }
 
         if (count != 0) {
             Token token = inputTokens.get(inputTokens.size() - 1);
-            throw new ParserException(
-                    "error.missing_parenthesis",
-                    token.getRow(),
-                    token.getColumn()
-            );
+            throw new MissingParenthesisException(token.getRow(), token.getRow());
         }
 
         for (Token token: inputTokens) {
-            if ((token.operatorEquals(Operator.MINUS) || token.operatorEquals(Operator.PLUS))) {
-                boolean isUnary = lastToken == null || lastToken.isOperator() || lastToken.isParen();
-                if (isUnary) {
-                    if (token.operatorEquals(Operator.MINUS)) {
-                        token.setText(Operator.UNARY_MINUS.getText()); // unary minus, parsers 1 - -1.0
-                    } else {
-                        token.setText(Operator.UNARY_PLUS.getText()); // unary plus, parses  1 + +1.0
-                    }
-                }
-            }
-
-            lastToken = token;
 
             if (!token.isOperator() &&
                     (token.isNumber() || token.isConstant() || token.isIdentifier())) {
@@ -386,7 +322,6 @@ public class Parser {
             }
         }
 
-        // Copy the rest of the stack to the output
         while (!stack.empty()) {
             outputTokens.add(stack.pop());
         }
@@ -396,18 +331,19 @@ public class Parser {
 
     private void assertBothNumbers(Token lhs, Token rhs) throws ParserException {
         if (lhs.getValue().getType() != ValueType.NUMBER || rhs.getValue().getType() != ValueType.NUMBER) {
-            throw new ParserException("error.both_must_be_numeric", lhs.getRow(), lhs.getColumn());
+            throw new IncompatibleTypesException(lhs.getRow(), lhs.getColumn());
 
         }
     }
 
     private void assertSufficientStack(Token token, Stack < Token > stack) throws ParserException {
         if (stack.size() < 2) {
-            throw new ParserException("error.syntax", token.getRow(), token.getColumn());
+            throw new IncompatibleTypesException(token.getRow(), token.getColumn());
         }
     }
 
-    private Token processOperators(Token token, Stack < Token > stack) throws ParserException {
+    private Token processOperators(Token token, Stack < Token > stack)
+            throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, DivisionByZeroException {
         Token result = null;
 
         Operator op = Operator.find(token);
@@ -420,56 +356,37 @@ public class Parser {
             if (op.equals(Operator.PLUS)) {
                 // Addition
                 assertBothNumbers(lhs, rhs);
-                BigDecimal bd = lhs.asNumber().add(rhs.asNumber());
-                bd = bd.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
-                result = new Token(TokenType.NUMBER, bd.toPlainString(), token.getRow(), token.getColumn());
+                BigInt bi = lhs.asNumber().add(rhs.asNumber());
+                result = new Token(TokenType.NUMBER, bi.convertToString(), token.getRow(), token.getColumn());
+
             } else if (op.equals(Operator.MINUS)) {
                 // Subtraction
                 assertBothNumbers(lhs, rhs);
-                BigDecimal bd = lhs.asNumber().subtract(rhs.asNumber());
-                bd = bd.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
-                result = new Token(TokenType.NUMBER, bd.toPlainString(), token.getRow(), token.getColumn());
+                BigInt bi = lhs.asNumber().subtract(rhs.asNumber());
+                result = new Token(TokenType.NUMBER, bi.convertToString(), token.getRow(), token.getColumn());
+
             } else if (op.equals(Operator.MULT)) {
                 // Multiplication
                 assertBothNumbers(lhs, rhs);
-                BigDecimal bd = lhs.asNumber().multiply(rhs.asNumber());
-                bd = bd.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
-                result = new Token(TokenType.NUMBER, bd.toPlainString(), token.getRow(), token.getColumn());
+                BigInt bi = lhs.asNumber().multiply(rhs.asNumber());
+                result = new Token(TokenType.NUMBER, bi.convertToString(), token.getRow(), token.getColumn());
+
             } else if (op.equals(Operator.DIV)) {
                 // Division
                 assertBothNumbers(lhs, rhs);
-                int divisorScale = rhs.asNumber().scale();
-                int scale = lhs.asNumber().equals(BigDecimal.ZERO) ? divisorScale : getPrecision();
-                BigDecimal bd = lhs.asNumber().divide(rhs.asNumber(), scale, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
-                result = new Token(TokenType.NUMBER, bd.toPlainString(), token.getRow(), token.getColumn());
-            } else if (op.equals(Operator.IDIV)) {
-                // Integer division
-                assertBothNumbers(lhs, rhs);
-                BigDecimal bd = lhs.asNumber().divideToIntegralValue(rhs.asNumber());
-                result = new Token(TokenType.NUMBER, bd.toPlainString(), token.getRow(), token.getColumn());
-            } else if (op.equals(Operator.MODULUS)) {
-                // Modulus
-                assertBothNumbers(lhs, rhs);
-                BigDecimal bd = lhs.asNumber().remainder(rhs.asNumber());
-                result = new Token(TokenType.NUMBER, bd.toPlainString(), token.getRow(), token.getColumn());
+                BigInt bi = lhs.asNumber().divide(rhs.asNumber());
+                result = new Token(TokenType.NUMBER, bi.convertToString(), token.getRow(), token.getColumn());
+
             } else if (op.equals(Operator.ASSIGNMENT)) {
                 // Assignment
                 if (lhs.isIdentifier()) {
                     // Trying to assign an uninitialized variable -- could also get here
                     if (rhs.getValue().getType().equals(ValueType.UNDEFINED)) {
-                        throw new ParserException(
-                                "error.expected_initialized",
-                                rhs.getRow(),
-                                rhs.getColumn()
-                        );
+                        throw new ExpectedInitializationException(rhs.getRow(), rhs.getColumn());
                     }
 
                 } else {
-                    throw new ParserException(
-                            "error.expected_identified",
-                            lhs.getRow(),
-                            lhs.getColumn()
-                    );
+                    throw new ExpectedInitializationException(token.getRow(), token.getColumn());
                 }
                 Value value = variables.get(sensitive ? lhs.getText() : lhs.getText().toUpperCase());
                 value.set(rhs.getValue());
@@ -481,12 +398,13 @@ public class Parser {
         return result;
     }
 
-    public Value computeRPN(List < Token > tokens) throws ParserException {
+    public Value computeRPN(List < Token > tokens)
+            throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException, DivisionByZeroException {
 
         Stack < Token > stack = new Stack < > ();
         for (Token token: tokens) {
             if (token.isConstant()) {
-                BigDecimal bd = getConstant(token.getText());
+                BigInt bd = getConstant(token.getText());
                 token.getValue().setValue(bd);
                 stack.push(token);
             } else if (token.isIdentifier()) {
@@ -501,25 +419,6 @@ public class Parser {
                 token.getValue().set(value);
                 stack.push(token);
             } else if (token.isOperator()) {
-
-                Operator op = Operator.find(token);
-                if (Operator.UNARY_MINUS.equals(op)) {
-                    Value value = stack.pop().getValue();
-                    if (value.getType() == ValueType.NUMBER) {
-                        value.setValue(value.asNumber().negate());
-                        stack.push(new Token(TokenType.NUMBER, value.toString(), token.getRow(), token.getColumn()));
-                    } else {
-                        throw new ParserException(
-                                "error.type_mismatch",
-                                token.getRow(),
-                                token.getColumn()
-                        );
-                    }
-                    continue;
-                } else if (op.equals(Operator.UNARY_PLUS)) {
-                    continue;
-                }
-
                 Token result = processOperators(token, stack);
                 if (result != null) {
                     stack.push(result);
@@ -530,11 +429,7 @@ public class Parser {
         }
 
         if (stack.size() > 1) {
-            throw new ParserException(
-                    "error.syntax",
-                    stack.get(0).getRow(),
-                    stack.get(0).getColumn()
-            );
+            throw new SyntaxErrorException(stack.get(0).getRow(), stack.get(0).getColumn());
         }
 
         return stack.size() == 0 ? new Value("empty result") : stack.pop().getValue();
