@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="software-quality" />
         <module name="MathParser" />
+        <module name="expression-evaluator" />
       </profile>
     </annotationProcessing>
   </component>

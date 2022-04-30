@@ -1,7 +1,7 @@
 package com.evaluator.parser;
 
 import com.evaluator.operators.Operator;
-import com.evaluator.exceptions.ParserException;
+import com.evaluator.parser.exceptions.ParserException;
 import com.evaluator.values.Value;
 import com.evaluator.values.ValueType;
 import com.evaluator.tokens.Token;
@@ -23,10 +23,12 @@ public class Parser {
 
     public static final int DEFAULT_PRECISION = 5;
 
-    private static final String DEFAULT_SPLIT_CHARACTER = ";";
-    private static final String SPLIT_PATTERN = "(?=([^\\\"\\']*[\\\"\\'][^\\\"\\']*[\\\"\\'])*[^\\\"\\']*$)";
+    public static final String DEFAULT_SPLIT_CHARACTER = ";";
+    public static final String SPLIT_PATTERN = "(?=([^\\\"\\']*[\\\"\\'][^\\\"\\']*[\\\"\\'])*[^\\\"\\']*$)";
 
     private int precision = DEFAULT_PRECISION;
+
+    private Mode mode = Mode.STATIC;
 
     private boolean sensitive;
 
@@ -53,6 +55,14 @@ public class Parser {
             constants.put(sensitive ? name : name.toUpperCase(), value);
             invalidatePattern();
         }
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
     public void clearConstants() {
@@ -491,9 +501,6 @@ public class Parser {
                 token.getValue().set(value);
                 stack.push(token);
             } else if (token.isOperator()) {
-
-                // This is dedicated only for unary operator of minus and plus,
-                // but due to an oversight for the requirements those are useless
 
                 Operator op = Operator.find(token);
                 if (Operator.UNARY_MINUS.equals(op)) {

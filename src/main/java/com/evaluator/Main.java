@@ -1,6 +1,6 @@
 package com.evaluator;
 
-import com.evaluator.exceptions.ParserException;
+import com.evaluator.parser.exceptions.ParserException;
 import com.evaluator.parser.Parser;
 import com.evaluator.tokens.Token;
 import com.evaluator.values.Value;

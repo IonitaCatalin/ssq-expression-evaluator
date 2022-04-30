@@ -1,4 +1,4 @@
-package com.evaluator.exceptions;
+package com.evaluator.parser.exceptions;
 
 public class ParserException extends Exception {
 
