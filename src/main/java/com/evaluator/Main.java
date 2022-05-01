@@ -27,13 +27,11 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static Mode currentMode = Mode.AUTOMATIC;
-
     static class DemoParser extends Parser {
         private List<Token> infix;
         private List<Token> rpn;
 
-        DemoParser(Mode mode) {
+        DemoParser() {
             super();
         }
 
@@ -63,8 +61,7 @@ public class Main {
             InvalidNumberFormatException,
             MaximumNumberOfDecimalExceededException,
             NegativeValueException, DivisionByZeroException {
-        boolean verbose = false;
-        String expression = null;
+        Mode modeType = Mode.AUTOMATIC;
         RuntimeMode selectedMode = null;
         Scanner scanner = new Scanner(System.in);
         String promptMode;
@@ -86,7 +83,7 @@ public class Main {
     }
 
     private static void solveExpression(String expression) throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException, DivisionByZeroException {
-        DemoParser parser = new DemoParser(Mode.INTERACTIVE);
+        DemoParser parser = new DemoParser();
         Value value = parser.evaluate(expression);
 
         System.out.println();

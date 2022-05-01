@@ -1,5 +1,6 @@
 package com.evaluator.modes.automatic;
 
+import com.evaluator.modes.Mode;
 import com.evaluator.modes.RuntimeMode;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -13,8 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutomaticMode implements RuntimeMode {
+    private Mode modeType = Mode.AUTOMATIC;
 
-    public AutomaticMode() {}
+    public AutomaticMode() {
+    }
+
+    public Mode getModeType() {
+        return modeType;
+    }
 
     @Override
     public List<String> getAllExpr() {
@@ -36,7 +43,8 @@ public class AutomaticMode implements RuntimeMode {
     private static List<JSONEntry> getJSONFromFile() throws IOException {
         Reader reader = Files.newBufferedReader(Paths.get("input.json"));
         Gson gson = new Gson();
-        Type userListType = new TypeToken<ArrayList<JSONEntry>>() {}.getType();
+        Type userListType = new TypeToken<ArrayList<JSONEntry>>() {
+        }.getType();
         List<JSONEntry> jsonEntries = gson.fromJson(reader, userListType);
         return jsonEntries;
     }

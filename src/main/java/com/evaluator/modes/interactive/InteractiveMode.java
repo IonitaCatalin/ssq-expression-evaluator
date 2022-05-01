@@ -1,5 +1,6 @@
 package com.evaluator.modes.interactive;
 
+import com.evaluator.modes.Mode;
 import com.evaluator.modes.RuntimeMode;
 
 import java.util.ArrayList;
@@ -7,6 +8,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class InteractiveMode implements RuntimeMode {
+
+    private Mode modeType = Mode.INTERACTIVE;
+
+    public Mode getModeType() {
+        return modeType;
+    }
+
     @Override
     public List<String> getAllExpr() {
         Scanner scanner = new Scanner(System.in);
