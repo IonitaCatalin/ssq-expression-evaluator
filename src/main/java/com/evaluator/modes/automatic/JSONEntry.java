@@ -1,8 +1,20 @@
 package com.evaluator.modes.automatic;
 
+import com.evaluator.values.Value;
+
 import java.util.Map;
 
 public class JSONEntry {
+    private Value result;
+
+    public Value getResult() {
+        return result;
+    }
+
+    public void setResult(Value result) {
+        this.result = result;
+    }
+
     private String expr;
     private Map<String, String> assigns;
 

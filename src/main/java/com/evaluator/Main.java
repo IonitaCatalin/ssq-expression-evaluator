@@ -3,7 +3,6 @@ package com.evaluator;
 import com.evaluator.modes.Mode;
 import com.evaluator.modes.RuntimeMode;
 import com.evaluator.modes.automatic.AutomaticMode;
-import com.evaluator.modes.automatic.JSONEntry;
 import com.evaluator.modes.interactive.InteractiveMode;
 import com.evaluator.parser.exceptions.ParserException;
 import com.evaluator.parser.Parser;
@@ -13,33 +12,25 @@ import com.evaluator.types.exceptions.InvalidNumberFormatException;
 import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
 import com.evaluator.types.exceptions.NegativeValueException;
 import com.evaluator.values.Value;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-    static class DemoParser extends Parser {
+    public static class DemoParser extends Parser {
         private List<Token> infix;
         private List<Token> rpn;
 
-        DemoParser() {
+        public DemoParser() {
             super();
         }
 
-        List<Token> getInfix() {
+        public List<Token> getInfix() {
             return infix;
         }
 
-        List<Token> getPostfix() {
+        public List<Token> getPostfix() {
             return rpn;
         }
 
@@ -75,38 +66,6 @@ public class Main {
         if (selectedMode == null) {
             return;
         }
-        List<String> expressions = selectedMode.getAllExpr();
-
-        for (String currentExpr : expressions) {
-            solveExpression(currentExpr);
-        }
+        selectedMode.solve();
     }
-
-    private static void solveExpression(String expression) throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException, DivisionByZeroException {
-        DemoParser parser = new DemoParser();
-        Value value = parser.evaluate(expression);
-
-        System.out.println();
-        System.out.println("EVALUATING " + expression);
-
-        System.out.println();
-
-        List<Token> tokens = parser.getInfix();
-        System.out.println("Infixed form:");
-        for (Token token : tokens) {
-            System.out.println(token);
-        }
-        System.out.println();
-
-        List<Token> rpn = parser.getPostfix();
-        System.out.println("RPN form:");
-        for (Token token : rpn) {
-            System.out.println(token);
-        }
-        System.out.println();
-
-        System.out.print("The result of evaluating the application" + value);
-    }
-
-
 }

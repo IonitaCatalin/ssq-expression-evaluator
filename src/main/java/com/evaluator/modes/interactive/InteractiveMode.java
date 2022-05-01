@@ -1,13 +1,19 @@
 package com.evaluator.modes.interactive;
 
+import com.evaluator.modes.AbstractSolver;
 import com.evaluator.modes.Mode;
 import com.evaluator.modes.RuntimeMode;
+import com.evaluator.parser.exceptions.ParserException;
+import com.evaluator.types.exceptions.DivisionByZeroException;
+import com.evaluator.types.exceptions.InvalidNumberFormatException;
+import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
+import com.evaluator.types.exceptions.NegativeValueException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class InteractiveMode implements RuntimeMode {
+public class InteractiveMode extends AbstractSolver implements RuntimeMode {
 
     private Mode modeType = Mode.INTERACTIVE;
 
@@ -24,5 +30,25 @@ public class InteractiveMode implements RuntimeMode {
         List<String> expressions = new ArrayList<>();
         expressions.add(input);
         return expressions;
+    }
+
+    @Override
+    public void solve() {
+        List<String> expressions = getAllExpr();
+        for(String currentExpr: expressions){
+            try {
+                solveExpression(currentExpr);
+            } catch (ParserException e) {
+                e.printStackTrace();
+            } catch (InvalidNumberFormatException e) {
+                e.printStackTrace();
+            } catch (MaximumNumberOfDecimalExceededException e) {
+                e.printStackTrace();
+            } catch (NegativeValueException e) {
+                e.printStackTrace();
+            } catch (DivisionByZeroException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
