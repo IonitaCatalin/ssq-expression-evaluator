@@ -1,0 +1,36 @@
+[
+  {
+    "result": {
+      "type": "NUMBER",
+      "valueAsNumber": {
+        "numberOfDigits": 2,
+        "value": [
+          0,
+          4
+        ]
+      }
+    },
+    "expr": "(A-B+2)*C",
+    "assigns": {
+      "A": "5",
+      "B": "3",
+      "C": "10"
+    }
+  },
+  {
+    "result": {
+      "type": "NUMBER",
+      "valueAsNumber": {
+        "numberOfDigits": 1,
+        "value": [
+          5
+        ]
+      }
+    },
+    "expr": "(A+B)",
+    "assigns": {
+      "A": "2",
+      "B": "3"
+    }
+  }
+]

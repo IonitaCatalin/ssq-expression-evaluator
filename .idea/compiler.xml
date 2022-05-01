@@ -6,9 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="software-quality" />
+        <module name="ssq-expression-evaluator" />
         <module name="MathParser" />
         <module name="expression-evaluator" />
+        <module name="software-quality" />
       </profile>
     </annotationProcessing>
   </component>

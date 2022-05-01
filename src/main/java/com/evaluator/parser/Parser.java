@@ -1,5 +1,6 @@
 package com.evaluator.parser;
 
+import com.evaluator.modes.Mode;
 import com.evaluator.operators.Operator;
 import com.evaluator.parser.exceptions.*;
 

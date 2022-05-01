@@ -1,4 +1,4 @@
-package com.evaluator.parser;
+package com.evaluator.modes;
 
 public enum Mode {
     AUTOMATIC,

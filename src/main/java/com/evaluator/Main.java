@@ -1,6 +1,9 @@
 package com.evaluator;
 
-import com.evaluator.parser.Mode;
+import com.evaluator.modes.Mode;
+import com.evaluator.modes.RuntimeMode;
+import com.evaluator.modes.automatic.AutomaticMode;
+import com.evaluator.modes.interactive.InteractiveMode;
 import com.evaluator.parser.exceptions.ParserException;
 import com.evaluator.parser.Parser;
 import com.evaluator.tokens.Token;
@@ -11,22 +14,23 @@ import com.evaluator.types.exceptions.NegativeValueException;
 import com.evaluator.values.Value;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
-    static class DemoParser extends Parser {
+    public static class DemoParser extends Parser {
         private List<Token> infix;
         private List<Token> rpn;
 
-        DemoParser(Mode mode) {
+        public DemoParser() {
             super();
         }
 
-        List<Token> getInfix() {
+        public List<Token> getInfix() {
             return infix;
         }
 
-        List<Token> getPostfix() {
+        public List<Token> getPostfix() {
             return rpn;
         }
 
@@ -48,42 +52,20 @@ public class Main {
             InvalidNumberFormatException,
             MaximumNumberOfDecimalExceededException,
             NegativeValueException, DivisionByZeroException {
-        boolean verbose = false;
-        String expression = null;
-        if (args.length == 0) {
-            usage();
-            return;
+        Mode modeType = Mode.AUTOMATIC;
+        RuntimeMode selectedMode = null;
+        Scanner scanner = new Scanner(System.in);
+        String promptMode;
+        System.out.println("Choose mode\n1-Automatic\n2-Interactive");
+        promptMode = scanner.nextLine();
+        if (promptMode.startsWith("1")) {
+            selectedMode = new AutomaticMode();
         } else {
-            expression = args[0];
-            verbose = args.length > 1 && args[1].toLowerCase().startsWith("-v");
+            selectedMode = new InteractiveMode();
         }
-
-        DemoParser parser = new DemoParser(Mode.INTERACTIVE);
-        Value value = parser.evaluate(expression);
-
-        System.out.println();
-        System.out.println("EVALUATING " + expression);
-
-        if (verbose) {
-            System.out.println();
-
-            List<Token> tokens = parser.getInfix();
-            System.out.println("Infixed form:");
-            for (Token token : tokens) {
-                System.out.println(token);
-            }
-            System.out.println();
-
-            List<Token> rpn = parser.getPostfix();
-            System.out.println("RPN form:");
-            for (Token token : rpn) {
-                System.out.println(token);
-            }
-            System.out.println();
+        if (selectedMode == null) {
+            return;
         }
-
-        System.out.print("The result of evaluating the application" + value);
-
+        selectedMode.solve();
     }
-
 }
