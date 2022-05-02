@@ -1,11 +1,9 @@
 package com.evaluator.modes.automatic;
 
-import com.evaluator.Main;
 import com.evaluator.modes.AbstractSolver;
 import com.evaluator.modes.Mode;
 import com.evaluator.modes.RuntimeMode;
 import com.evaluator.parser.exceptions.ParserException;
-import com.evaluator.tokens.Token;
 import com.evaluator.types.exceptions.DivisionByZeroException;
 import com.evaluator.types.exceptions.InvalidNumberFormatException;
 import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
@@ -21,7 +19,11 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AutomaticMode extends AbstractSolver implements RuntimeMode {
     private List<JSONEntry> jsonEntries;

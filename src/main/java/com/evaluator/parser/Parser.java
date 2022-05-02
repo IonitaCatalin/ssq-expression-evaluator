@@ -3,7 +3,12 @@ package com.evaluator.parser;
 import com.evaluator.modes.Mode;
 import com.evaluator.operators.Operator;
 
-import com.evaluator.parser.exceptions.*;
+import com.evaluator.parser.exceptions.BadSyntaxException;
+import com.evaluator.parser.exceptions.InitializationExpectedException;
+import com.evaluator.parser.exceptions.InvalidTokenException;
+import com.evaluator.parser.exceptions.OperatorExpectedException;
+import com.evaluator.parser.exceptions.OperatorNotFoundException;
+import com.evaluator.parser.exceptions.ParenthesisCountException;
 import com.evaluator.parser.exceptions.ParserException;
 
 import com.evaluator.values.Value;
@@ -22,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.Collections;
 import java.util.Stack;
 
 import java.util.regex.Matcher;
