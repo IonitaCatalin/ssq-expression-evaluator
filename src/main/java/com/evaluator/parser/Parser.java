@@ -1,6 +1,5 @@
 package com.evaluator.parser;
 
-import com.evaluator.functions.ArgsCount;
 import com.evaluator.modes.Mode;
 import com.evaluator.operators.Operator;
 
@@ -200,7 +199,6 @@ public class Parser {
 
         List<Token> outputTokens = new ArrayList<>();
         Stack<Token> stack = new Stack<>();
-        Stack<ArgsCount> argStack = new Stack<>();
 
         int count = 0;
         for (Token token: tokens) {
