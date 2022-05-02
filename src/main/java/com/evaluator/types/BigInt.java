@@ -1,10 +1,7 @@
 package com.evaluator.types;
 
 
-import com.evaluator.types.exceptions.DivisionByZeroException;
-import com.evaluator.types.exceptions.InvalidNumberFormatException;
-import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
-import com.evaluator.types.exceptions.NegativeValueException;
+import com.evaluator.types.exceptions.*;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -72,26 +69,26 @@ public class BigInt implements Comparable<BigInt>{
 
         String value = "";
 
-        for(int i = 0; i<minDigits; i++){
+        for(int i = 0; i < minDigits; i++){
             int digit = this.value[i] + n.value[i] + carry;
             carry = 0;
 
             if(digit > 9){
                 carry = 1;
-                digit = digit - 10 + carry;
+                digit = this.value[i] + n.value[i] - 10 + (i != 0 ? carry: 0);
             }
 
             value = String.valueOf((digit)).concat(value);
         }
 
-        if(this.numberOfDigits > n.numberOfDigits){
+        if(this.numberOfDigits > n.numberOfDigits) {
             for(int i = minDigits; i< maxDigits; i++){
                 int digit = this.value[i] + carry;
                 carry = 0;
 
                 if(digit > 9){
                     carry = 1;
-                    digit = digit - 10 + carry;
+                    digit = this.value[i] + n.value[i] - 10 + carry;
                 }
 
                 value = String.valueOf((digit)).concat(value);
@@ -103,7 +100,7 @@ public class BigInt implements Comparable<BigInt>{
 
                 if(digit > 9){
                     carry = 1;
-                    digit = digit - 10 + carry;
+                    digit = this.value[i] + n.value[i] - 10 + carry;
                 }
 
                 value = String.valueOf((digit)).concat(value);
@@ -140,16 +137,16 @@ public class BigInt implements Comparable<BigInt>{
             int digit = this.value[i] - n.value[i] + carry;
             carry = 0;
 
-            if(digit < 0){
+            if(digit < 0) {
                 carry = -1;
-                digit = (this.value[i]+10) - n.value[i] + carry;
+                digit = (this.value[i] + 10) - n.value[i] + (i != 0 ? carry: 0) ;
             }
 
             value = String.valueOf((digit)).concat(value);
         }
 
 
-        for(int i = n.getNumberOfDigits(); i< this.numberOfDigits; i++){
+        for(int i = n.getNumberOfDigits(); i < this.numberOfDigits; i++){
             int digit = this.value[i] + carry;
             carry = 0;
 
@@ -303,15 +300,30 @@ public class BigInt implements Comparable<BigInt>{
 
         BigInt b = new BigInt(this);
 
-        for(int i=1; i<power; i++){
+        for(int i = 1; i < power; i++){
             b = new BigInt(b.multiply(this));
         }
 
         return b;
     }
 
+    public BigInt pow(BigInt power) {
+        if(power.compareTo(new BigInt(0)) == 0 ) {
+            return new BigInt(1);
+        }
+
+        BigInt b = new BigInt(this);
+
+        while(!(power.compareTo(new BigInt(1)) == 0)) {
+            b = new BigInt(b.multiply(this));
+            power = power.subtract(new BigInt(1));
+        }
+
+        return b;
+    }
+
     public BigInt sqrt(int root) {
-        for(int i = 1; i<Integer.MAX_VALUE; i++){
+        for(int i = 1; i < Integer.MAX_VALUE; i++){
             BigInt b = new BigInt(i);
             if(b.pow(root).compareTo(this) > 0){
                 return new BigInt(i-1);
@@ -321,8 +333,17 @@ public class BigInt implements Comparable<BigInt>{
         return null;
     }
 
-    public BigInt sqrt() {
-       return this.sqrt(2);
+    public BigInt sqrt(BigInt root) {
+
+        for(int i = 1; i < Integer.MAX_VALUE; i++){
+            BigInt b = new BigInt(i);
+            if(b.pow(root).compareTo(this) > 0){
+                return new BigInt(i-1);
+            }
+        }
+
+        return null;
+
     }
 
 

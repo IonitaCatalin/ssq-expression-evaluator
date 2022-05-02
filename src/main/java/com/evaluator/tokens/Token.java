@@ -14,6 +14,7 @@ public class Token {
     private final int row;
     private final int column;
 
+    private int argsc;
     private String text;
 
 
@@ -48,7 +49,6 @@ public class Token {
         return getValue() != null ? getValue().asString() : null;
     }
 
-
     public BigInt asNumber() {
         return getValue() != null ? getValue().asNumber() : null;
     }
@@ -78,10 +78,6 @@ public class Token {
         return this.value;
     }
 
-    public boolean isConstant() {
-        return TokenType.CONSTANT.equals(type);
-    }
-
     public boolean isIdentifier() {
         return TokenType.IDENTIFIER.equals(type);
     }
@@ -102,14 +98,6 @@ public class Token {
         }
     }
 
-    public boolean isParen() {
-        Operator op = Operator.find(this);
-        if (op == null) {
-            op = Operator.find(this);
-        }
-        return TokenType.OPERATOR.equals(type) && Operator.L_PARENTHESIS.equals(op);
-    }
-
 
     public void setText(String text) {
         this.text = text;
@@ -119,7 +107,6 @@ public class Token {
             throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         this.value.set(value);
     }
-
 
     public boolean operatorEquals(Operator... operators) {
         boolean result = false;
@@ -133,6 +120,15 @@ public class Token {
         }
         return result;
     }
+
+    public int getArgsc() {
+        return argsc;
+    }
+
+    public void setArgsc(int argsc) {
+        this.argsc = argsc;
+    }
+
     @Override
     public String toString() {
         return "type = " +

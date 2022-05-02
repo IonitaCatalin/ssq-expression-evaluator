@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 public enum TokenType {
     NUMBER("(?:\\b[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+\\b)(?:[eE][-+]?[0-9]+\\b)?", false),
     OPERATOR("~~dynamically-generated~~", false),
-    CONSTANT("~~dynamically-generated~~", false),
     IDENTIFIER("[_A-Za-z][_A-Za-z0-9]*", false),
     NEWLINE("\n", false),
     EOS(";", false),
@@ -28,8 +27,6 @@ public enum TokenType {
     public String getRegex(Parser parser) {
         if (this.equals(OPERATOR)) {
             return Operator.getOperatorRegex();
-        } else if (this.equals(CONSTANT)) {
-            return parser.getConstantRegex();
         } else {
             return regex;
         }

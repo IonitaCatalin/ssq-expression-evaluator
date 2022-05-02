@@ -7,11 +7,6 @@ import com.evaluator.modes.interactive.InteractiveMode;
 import com.evaluator.parser.exceptions.ParserException;
 import com.evaluator.parser.Parser;
 import com.evaluator.tokens.Token;
-import com.evaluator.types.exceptions.DivisionByZeroException;
-import com.evaluator.types.exceptions.InvalidNumberFormatException;
-import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
-import com.evaluator.types.exceptions.NegativeValueException;
-import com.evaluator.values.Value;
 
 import java.util.List;
 import java.util.Scanner;
@@ -47,11 +42,7 @@ public class Main {
         System.out.println("usage: Demo \"expression\" [-verbose]");
     }
 
-    public static void main(String[] args)
-            throws ParserException,
-            InvalidNumberFormatException,
-            MaximumNumberOfDecimalExceededException,
-            NegativeValueException, DivisionByZeroException {
+    public static void main(String[] args)  {
         Mode modeType = Mode.AUTOMATIC;
         RuntimeMode selectedMode = null;
         Scanner scanner = new Scanner(System.in);
@@ -62,9 +53,6 @@ public class Main {
             selectedMode = new AutomaticMode();
         } else {
             selectedMode = new InteractiveMode();
-        }
-        if (selectedMode == null) {
-            return;
         }
         selectedMode.solve();
     }

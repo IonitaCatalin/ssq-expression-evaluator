@@ -12,7 +12,8 @@ import com.evaluator.values.Value;
 import java.util.List;
 
 public abstract class AbstractSolver {
-    public Value solveExpression(String expression) throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException, DivisionByZeroException {
+    public Value solveExpression(String expression)
+            throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException, DivisionByZeroException {
         Main.DemoParser parser = new Main.DemoParser();
         Value value = parser.evaluate(expression);
 

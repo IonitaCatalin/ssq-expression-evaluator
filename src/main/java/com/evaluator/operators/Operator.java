@@ -9,17 +9,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public enum Operator {
-    L_PARENTHESIS     (1, Operator.LEFT_ASSOCIATIVE, "(", "\\("),
+    COMMA               (1, Operator.NONE_ASSOCIATIVE, ",", ","),
+    L_PARENTHESIS       (1, Operator.LEFT_ASSOCIATIVE, "(", "\\("),
     R_PARENTHESIS       (1, Operator.LEFT_ASSOCIATIVE, ")", "\\)"),
 
+    POW          (3, Operator.LEFT_ASSOCIATIVE,"^", "\\^"),
+    SQRT         (3, Operator.LEFT_ASSOCIATIVE,"#","\\#"),
     MULT         (3, Operator.LEFT_ASSOCIATIVE, "*", "\\*"),
     DIV          (3, Operator.LEFT_ASSOCIATIVE, "/", "/"),
 
     PLUS         (4, Operator.LEFT_ASSOCIATIVE, "+", "\\+"),
     MINUS        (4, Operator.LEFT_ASSOCIATIVE, "-", "-"),
 
+
     ASSIGNMENT   (5, Operator.RIGHT_ASSOCIATIVE, "=", "=");
 
+    public static final int NONE_ASSOCIATIVE = 0;
     public static final int LEFT_ASSOCIATIVE  = 1;
     public static final int RIGHT_ASSOCIATIVE = 2;
 
@@ -48,15 +53,6 @@ public enum Operator {
     public static Operator find(Token token) {
         String key = (token == null || token.getText() == null) ? "" : token.getText().toUpperCase();
         return caseInsensitiveMap.get(key);
-    }
-
-    public boolean inSet(Operator... operators) {
-        for (Operator operator : operators) {
-            if (this.equals(operator)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public int getAssociation() {

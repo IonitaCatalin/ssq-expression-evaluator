@@ -10,6 +10,8 @@ public class Value {
 
     private ValueType type = ValueType.UNDEFINED;
 
+    private String name;
+
     private BigInt valueAsNumber = null;
     private String valueAsString = null;
 
@@ -39,6 +41,7 @@ public class Value {
             throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         if (var != null) {
             this.type = var.type;
+            this.name = var.name;
             this.valueAsString = var.valueAsString;
             this.valueAsNumber = var.valueAsNumber == null ? null : new BigInt(var.valueAsNumber.toString());
         }
@@ -61,9 +64,18 @@ public class Value {
     }
 
 
-    public void setValue(BigInt value) {
+    public Value setValue(BigInt value) {
         this.valueAsNumber = value;
         setType(ValueType.NUMBER);
+        return null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
