@@ -13,8 +13,8 @@ public enum Operator {
     L_PARENTHESIS       (1, Operator.LEFT_ASSOCIATIVE, "(", "\\("),
     R_PARENTHESIS       (1, Operator.LEFT_ASSOCIATIVE, ")", "\\)"),
 
-    POW          (3, Operator.LEFT_ASSOCIATIVE,"^", "\\^"),
-    SQRT         (3, Operator.LEFT_ASSOCIATIVE,"#","\\#"),
+    POW          (2, Operator.LEFT_ASSOCIATIVE,"^", "\\^"),
+    SQRT         (2, Operator.LEFT_ASSOCIATIVE,"#","\\#"),
     MULT         (3, Operator.LEFT_ASSOCIATIVE, "*", "\\*"),
     DIV          (3, Operator.LEFT_ASSOCIATIVE, "/", "/"),
 

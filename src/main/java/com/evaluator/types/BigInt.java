@@ -84,13 +84,13 @@ public class BigInt implements Comparable<BigInt>{
         }
 
         if(this.numberOfDigits > n.numberOfDigits) {
-            for(int i = minDigits; i< maxDigits; i++){
+            for(int i = minDigits; i < maxDigits; i++){
                 int digit = this.value[i] + carry;
                 carry = 0;
 
                 if(digit > 9){
                     carry = 1;
-                    digit = this.value[i] + n.value[i] - 10 + carry;
+                    digit = this.value[i] - 10 + carry;
                 }
 
                 value = String.valueOf((digit)).concat(value);
@@ -102,7 +102,7 @@ public class BigInt implements Comparable<BigInt>{
 
                 if(digit > 9){
                     carry = 1;
-                    digit = this.value[i] + n.value[i] - 10 + carry;
+                    digit = n.value[i] - 10 + carry;
                 }
 
                 value = String.valueOf((digit)).concat(value);
@@ -121,7 +121,7 @@ public class BigInt implements Comparable<BigInt>{
         return null;
     }
 
-    public BigInt subtract(BigInt n) {
+    public BigInt subtract(BigInt n){
 
         if(this.compareTo(n) < 0){
             try {
@@ -131,40 +131,44 @@ public class BigInt implements Comparable<BigInt>{
             }
         }
 
+        int n1 = this.getNumberOfDigits();
+        int n2 = n.getNumberOfDigits();
+        String str = "";
+
         int carry = 0;
 
-        String value = "";
+        for (int i = 0; i < n2; i++) {
+            int sub = (this.value[i] - n.getValue()[i] - carry);
 
-        for(int i = 0; i < n.getNumberOfDigits(); i++){
-            int digit = this.value[i] - n.value[i] + carry;
-            carry = 0;
-
-            if(digit < 0) {
-                carry = -1;
-                digit = (this.value[i] + 10) - n.value[i] + (i != 0 ? carry: 0) ;
+            if (sub < 0) {
+                sub = sub + 10;
+                carry = 1;
             }
+            else
+                carry = 0;
 
-            value = String.valueOf((digit)).concat(value);
+            str = (String.valueOf(sub)).concat(str);
         }
 
-
-        for(int i = n.getNumberOfDigits(); i < this.numberOfDigits; i++){
-            int digit = this.value[i] + carry;
-            carry = 0;
-
-            if(digit < 0){
-                carry = -1;
-                digit = (digit + 10) + carry;
+        for (int i = n2; i < n1; i++) {
+            int sub = (this.value[i] - carry);
+            if (sub < 0) {
+                sub = sub + 10;
+                carry = 1;
             }
+            else
+                carry = 0;
 
-            value = String.valueOf((digit)).concat(value);
+
+            str = (String.valueOf(sub)).concat(str);
         }
 
-        if(value.startsWith("0")){
-            value = value.substring(1);
+        if(str.startsWith("0")){
+            str = str.substring(1);
         }
+
         try {
-            return new BigInt(value);
+            return new BigInt(str);
         } catch (MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
             e.printStackTrace();
         }
