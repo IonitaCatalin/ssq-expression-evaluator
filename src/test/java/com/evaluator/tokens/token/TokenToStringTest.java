@@ -1,4 +1,4 @@
-package com.evaluator.tokens.token.toString;
+package com.evaluator.tokens.token;
 
 import com.evaluator.tokens.Token;
 import com.evaluator.tokens.TokenType;

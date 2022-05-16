@@ -1,4 +1,4 @@
-package com.evaluator.tokens.token.setValue;
+package com.evaluator.tokens.token;
 
 import com.evaluator.tokens.Token;
 import com.evaluator.types.exceptions.InvalidNumberFormatException;

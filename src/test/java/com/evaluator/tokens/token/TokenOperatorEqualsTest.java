@@ -1,4 +1,4 @@
-package com.evaluator.tokens.token.operatorEquals;
+package com.evaluator.tokens.token;
 
 import com.evaluator.operators.Operator;
 import com.evaluator.tokens.Token;

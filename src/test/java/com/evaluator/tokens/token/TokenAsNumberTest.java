@@ -1,4 +1,4 @@
-package com.evaluator.tokens.token.asNumber;
+package com.evaluator.tokens.token;
 
 import com.evaluator.tokens.Token;
 

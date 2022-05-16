@@ -1,4 +1,4 @@
-package com.evaluator.tokens.tokentype.resolve;
+package com.evaluator.tokens.tokentype;
 
 import com.evaluator.tokens.TokenType;
 import org.junit.Test;

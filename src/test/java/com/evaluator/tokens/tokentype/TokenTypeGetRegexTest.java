@@ -1,4 +1,4 @@
-package com.evaluator.tokens.tokentype.getRegex;
+package com.evaluator.tokens.tokentype;
 
 import com.evaluator.parser.Parser;
 import com.evaluator.tokens.TokenType;

@@ -1,4 +1,4 @@
-package com.evaluator.tokens.token.setText;
+package com.evaluator.tokens.token;
 
 import com.evaluator.tokens.Token;
 import org.junit.Test;
