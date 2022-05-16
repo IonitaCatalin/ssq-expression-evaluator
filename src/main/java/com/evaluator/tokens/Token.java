@@ -14,9 +14,7 @@ public class Token {
     private final int row;
     private final int column;
 
-    private int argsc;
     private String text;
-
 
     public Token(TokenType type, String text, int row, int column)
             throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
@@ -31,9 +29,12 @@ public class Token {
 
     }
 
-    public Token(TokenType type, Value value, int row, int column)
-            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
-        this(type, "VALUE", value, row, column);
+    public Token() {
+        type = TokenType.NUMBER;
+        value = new Value();
+        row = 0;
+        column = 0;
+        text = "";
     }
 
     public Token(TokenType type, String text, Value value, int row, int column)
@@ -45,18 +46,10 @@ public class Token {
         this.value = new Value(value);
     }
 
-    public String asString() {
-        return getValue() != null ? getValue().asString() : null;
-    }
 
     public BigInt asNumber() {
         return getValue() != null ? getValue().asNumber() : null;
     }
-
-    public boolean equals(Operator operator) {
-        return operator != null && getText() != null && getText().equalsIgnoreCase(operator.getText());
-    }
-
 
     public int getRow() {
         return row;
@@ -69,6 +62,7 @@ public class Token {
     public String getText() {
         return text;
     }
+
 
     public TokenType getType() {
         return type;
@@ -99,13 +93,14 @@ public class Token {
     }
 
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public void setValue(Value value)
             throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         this.value.set(value);
+    }
+
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public boolean operatorEquals(Operator... operators) {
@@ -119,14 +114,6 @@ public class Token {
             }
         }
         return result;
-    }
-
-    public int getArgsc() {
-        return argsc;
-    }
-
-    public void setArgsc(int argsc) {
-        this.argsc = argsc;
     }
 
     @Override
