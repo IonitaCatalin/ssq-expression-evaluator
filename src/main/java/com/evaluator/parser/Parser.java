@@ -11,6 +11,7 @@ import com.evaluator.parser.exceptions.OperatorNotFoundException;
 import com.evaluator.parser.exceptions.ParenthesisCountException;
 import com.evaluator.parser.exceptions.ParserException;
 
+import com.evaluator.types.exceptions.NegativeValueException;
 import com.evaluator.values.Value;
 import com.evaluator.values.ValueType;
 import com.evaluator.tokens.Token;
@@ -300,7 +301,7 @@ public class Parser {
                 Value value = variables.get(sensitive ? lhs.getText() : lhs.getText().toUpperCase());
                 value.set(rhs.getValue());
             }
-        } catch (ArithmeticException ex) {
+        } catch (ArithmeticException | NegativeValueException ex) {
             throw new ParserException(ex.getMessage(), ex, token.getRow(), token.getColumn());
         }
 

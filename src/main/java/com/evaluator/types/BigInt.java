@@ -15,7 +15,7 @@ public class BigInt implements Comparable<BigInt>{
 
     public BigInt(){
         numberOfDigits = 0;
-        value = null;
+        value = new int[0];
     }
 
     public BigInt(String val) throws MaximumNumberOfDecimalExceededException, InvalidNumberFormatException {
@@ -62,7 +62,7 @@ public class BigInt implements Comparable<BigInt>{
         }
     }
 
-    public BigInt add(BigInt n) {
+    public BigInt add(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
 
         int minDigits = Math.min(this.numberOfDigits, n.getNumberOfDigits());
         int maxDigits = Math.max(this.numberOfDigits, n.getNumberOfDigits());
@@ -113,22 +113,14 @@ public class BigInt implements Comparable<BigInt>{
             value = String.valueOf((carry)).concat(value);
         }
 
-        try {
-            return new BigInt(value);
-        } catch (MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return new BigInt(value);
+
     }
 
-    public BigInt subtract(BigInt n){
+    public BigInt subtract(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
 
         if(this.compareTo(n) < 0){
-            try {
-                throw new NegativeValueException();
-            } catch (NegativeValueException e) {
-                e.printStackTrace();
-            }
+            throw new NegativeValueException();
         }
 
         int n1 = this.getNumberOfDigits();
@@ -163,29 +155,19 @@ public class BigInt implements Comparable<BigInt>{
             str = (String.valueOf(sub)).concat(str);
         }
 
-        if(str.startsWith("0")){
+        while(str.startsWith("0")){
             str = str.substring(1);
         }
 
-        try {
-            return new BigInt(str);
-        } catch (MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return new BigInt(str);
     }
 
-    public BigInt multiply(BigInt n) {
+    public BigInt multiply(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         int len1 = this.numberOfDigits;
         int len2 = n.getNumberOfDigits();
 
         if (len1 == 0 || len2 == 0) {
-            try {
-                return new BigInt("0");
-            } catch (MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
-                e.printStackTrace();
-            }
+            return new BigInt("0");
         }
 
 
@@ -224,11 +206,7 @@ public class BigInt implements Comparable<BigInt>{
         }
 
         if (i == -1) {
-            try {
-                return new BigInt("0");
-            } catch (MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
-                e.printStackTrace();
-            }
+            return new BigInt("0");
         }
 
         String s = "";
@@ -237,23 +215,13 @@ public class BigInt implements Comparable<BigInt>{
             s = s.concat(String.valueOf(result[i--]));
         }
 
-        try {
-            return new BigInt(s);
-        } catch (MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return new BigInt(s);
     }
 
-    public BigInt divide(int divisor)  {
+    public BigInt divide(int divisor) throws DivisionByZeroException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
 
         if(divisor == 0){
-            try {
-                throw new DivisionByZeroException();
-            } catch (DivisionByZeroException e) {
-                e.printStackTrace();
-            }
+            throw new DivisionByZeroException();
         }
 
         StringBuilder result = new StringBuilder();
@@ -265,20 +233,17 @@ public class BigInt implements Comparable<BigInt>{
             carry = x % divisor;
         }
 
-        for (int i = 0; i < result.length(); i++) {
+        int i;
+        for (i = 0; i < result.length(); i++) {
             if (result.charAt(i) != '0') {
-                try {
-                    return new BigInt(result.substring(i));
-                } catch (MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
-                    e.printStackTrace();
-                }
+                break;
             }
         }
 
-        return null;
+        return new BigInt(result.substring(i));
     }
 
-    public BigInt divide(BigInt divisor) throws DivisionByZeroException {
+    public BigInt divide(BigInt divisor) throws DivisionByZeroException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
         BigInt b = new BigInt(this);
 
         if(divisor.compareTo(new BigInt(0)) == 0) {
@@ -295,13 +260,9 @@ public class BigInt implements Comparable<BigInt>{
         return count;
     }
 
-    public BigInt pow(int power) {
+    public BigInt pow(int power) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         if(power == 0){
-            try {
-                return new BigInt("1");
-            } catch (MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
-                e.printStackTrace();
-            }
+            return new BigInt("1");
         }
 
         BigInt b = new BigInt(this);
@@ -313,7 +274,7 @@ public class BigInt implements Comparable<BigInt>{
         return b;
     }
 
-    public BigInt pow(BigInt power) {
+    public BigInt pow(BigInt power) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
         if(power.compareTo(new BigInt(0)) == 0 ) {
             return new BigInt(1);
         }
@@ -328,7 +289,7 @@ public class BigInt implements Comparable<BigInt>{
         return b;
     }
 
-    public BigInt sqrt(int root) {
+    public BigInt sqrt(int root) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         for(int i = 1; i < Integer.MAX_VALUE; i++){
             BigInt b = new BigInt(i);
             if(b.pow(root).compareTo(this) > 0){
@@ -339,7 +300,7 @@ public class BigInt implements Comparable<BigInt>{
         return null;
     }
 
-    public BigInt sqrt(BigInt root) {
+    public BigInt sqrt(BigInt root) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
 
         for(int i = 1; i < Integer.MAX_VALUE; i++){
             BigInt b = new BigInt(i);
@@ -366,10 +327,6 @@ public class BigInt implements Comparable<BigInt>{
 
         for (int j : value) {
             s = String.valueOf(j).concat(s);
-        }
-
-        if(s.equals("")){
-            return null;
         }
 
         return s;
