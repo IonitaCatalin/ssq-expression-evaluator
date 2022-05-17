@@ -28,16 +28,11 @@ import java.util.Map;
 public class AutomaticMode extends AbstractSolver implements RuntimeMode {
     private List<JSONEntry> jsonEntries;
     private Map<String, JSONEntry> mapping;
-    private Mode modeType = Mode.AUTOMATIC;
     private static Gson gson;
 
     public AutomaticMode() {
         gson = new Gson();
         mapping = new HashMap<>();
-    }
-
-    public Mode getModeType() {
-        return modeType;
     }
 
     @Override
@@ -83,22 +78,14 @@ public class AutomaticMode extends AbstractSolver implements RuntimeMode {
             try {
                 Value result = solveExpression(currentExpr);
                 mapping.get(currentExpr).setResult(result);
-            } catch (ParserException e) {
-                e.printStackTrace();
-            } catch (InvalidNumberFormatException e) {
-                e.printStackTrace();
-            } catch (MaximumNumberOfDecimalExceededException e) {
-                e.printStackTrace();
-            } catch (NegativeValueException e) {
-                e.printStackTrace();
-            } catch (DivisionByZeroException e) {
+            } catch (ParserException | DivisionByZeroException | NegativeValueException | MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
                 e.printStackTrace();
             }
         }
         displayOutputToFile();
     }
 
-    public static List<JSONEntry> getJSONFromFile() throws IOException {
+    public List<JSONEntry> getJSONFromFile() throws IOException {
         Reader reader = Files.newBufferedReader(Paths.get("input.json"));
         Type userListType = new TypeToken<ArrayList<JSONEntry>>() {
         }.getType();

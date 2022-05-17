@@ -15,7 +15,9 @@ public class Value {
     private BigInt valueAsNumber = null;
     private String valueAsString = null;
 
-    public Value() {}
+    public Value() {
+
+    }
 
     public Value(BigInt var) {
         setValue(var);
@@ -30,6 +32,7 @@ public class Value {
             throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         set(var);
     }
+
 
     public final Value clear() {
         this.type = ValueType.UNDEFINED;
