@@ -27,6 +27,11 @@ import java.util.Map;
 
 public class AutomaticMode extends AbstractSolver implements RuntimeMode {
     private List<JSONEntry> jsonEntries;
+
+    public void setMapping(Map<String, JSONEntry> mapping) {
+        this.mapping = mapping;
+    }
+
     private Map<String, JSONEntry> mapping;
     private static Gson gson;
 
