@@ -37,11 +37,6 @@ public class Main {
         }
     }
 
-    private static void usage() {
-        System.out.println();
-        System.out.println("usage: Demo \"expression\" [-verbose]");
-    }
-
     public static void main(String[] args)  {
         Mode modeType = Mode.AUTOMATIC;
         RuntimeMode selectedMode = null;

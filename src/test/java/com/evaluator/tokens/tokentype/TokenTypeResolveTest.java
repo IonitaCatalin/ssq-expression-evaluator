@@ -20,5 +20,7 @@ public class TokenTypeResolveTest {
     @Test
     public void testResolveForEscapedCharacters() {
         assertEquals(TokenType.NUMBER.resolve("\\a"), "\\a");
+        assertEquals(TokenType.IDENTIFIER.resolve("\\a\\b\\f"), "\\a\\b\\f");
     }
+
 }
