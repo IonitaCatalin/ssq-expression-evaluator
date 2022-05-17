@@ -7,21 +7,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum TokenType {
-    NUMBER("(?:\\b[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+\\b)(?:[eE][-+]?[0-9]+\\b)?", false),
-    OPERATOR("~~dynamically-generated~~", false),
-    IDENTIFIER("[_A-Za-z][_A-Za-z0-9]*", false),
-    NEWLINE("\n", false),
-    EOS(";", false),
-    WHITESPACE("[ \\t]+", false),
-    NOMATCH("", false),
-    VALUE("", false);
+    NUMBER("(?:\\b[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+\\b)(?:[eE][-+]?[0-9]+\\b)?"),
+    OPERATOR("~~dynamically-generated~~"),
+    IDENTIFIER("[_A-Za-z][_A-Za-z0-9]*"),
+    NEWLINE("\n"),
+    EOS(";"),
+    WHITESPACE("[ \\t]+"),
+    NOMATCH(""),
+    VALUE("");
 
     private final String regex;
-    private final Pattern pattern;
 
-    TokenType(String regex, boolean resolution) {
+    TokenType(String regex) {
         this.regex = regex;
-        this.pattern = resolution ? Pattern.compile(regex) : null;
     }
 
     public String getRegex(Parser parser) {
@@ -111,17 +109,6 @@ public enum TokenType {
     }
 
     public String resolve(String text) {
-        if (pattern != null) {
-            Matcher matcher = pattern.matcher(text);
-            if (matcher.find() && matcher.groupCount() > 0) {
-                for (int i = 1; i <= matcher.groupCount(); i++) {
-                    if (matcher.group(i) != null) {
-                        return unescapeString(matcher.group(i));
-                    }
-                }
-            }
-        }
-
         return text;
     }
 
