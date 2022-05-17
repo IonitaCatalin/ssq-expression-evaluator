@@ -48,7 +48,7 @@ public class Parser {
 
     final Map < String,List<Token>> expTokens = new HashMap<>();
 
-    private final Map<String, Value> variables = new TreeMap<>();
+    private  Map<String, Value> variables = new TreeMap<>();
 
     public Parser() {
         sensitive = false;
@@ -60,6 +60,13 @@ public class Parser {
         invalidatePattern();
     }
 
+    public void setVariables(Map<String, Value> variables) {
+        this.variables = variables;
+    }
+
+    public Map<String, Value> getVariables() {
+        return variables;
+    }
 
     public Pattern getPattern(Parser parser) {
         if (pattern == null) {
@@ -82,7 +89,7 @@ public class Parser {
         pattern = null;
     }
 
-    private boolean isType(Token token, int type) throws ParserException {
+    public boolean isType(Token token, int type) throws ParserException {
         if (!token.isOperator()) {
             throw new OperatorExpectedException(token.getRow(), token.getColumn());
         }
@@ -255,8 +262,7 @@ public class Parser {
         return outputTokens;
     }
 
-
-    private Token processOperators(Token token, Stack < Token > stack)
+    public Token processOperators(Token token, Stack < Token > stack)
             throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, DivisionByZeroException {
         Token result = null;
 
