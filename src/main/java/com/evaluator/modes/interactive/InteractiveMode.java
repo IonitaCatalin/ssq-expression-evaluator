@@ -15,12 +15,6 @@ import java.util.Scanner;
 
 public class InteractiveMode extends AbstractSolver implements RuntimeMode {
 
-    private Mode modeType = Mode.INTERACTIVE;
-
-    public Mode getModeType() {
-        return modeType;
-    }
-
     @Override
     public List<String> getAllExpr() {
         Scanner scanner = new Scanner(System.in);
@@ -38,15 +32,7 @@ public class InteractiveMode extends AbstractSolver implements RuntimeMode {
         for(String currentExpr: expressions){
             try {
                 solveExpression(currentExpr);
-            } catch (ParserException e) {
-                e.printStackTrace();
-            } catch (InvalidNumberFormatException e) {
-                e.printStackTrace();
-            } catch (MaximumNumberOfDecimalExceededException e) {
-                e.printStackTrace();
-            } catch (NegativeValueException e) {
-                e.printStackTrace();
-            } catch (DivisionByZeroException e) {
+            } catch (ParserException | InvalidNumberFormatException | MaximumNumberOfDecimalExceededException | NegativeValueException | DivisionByZeroException e) {
                 e.printStackTrace();
             }
         }
