@@ -82,7 +82,7 @@ public class Parser {
         pattern = null;
     }
 
-    private boolean isType(Token token, int type) throws ParserException {
+    public boolean isType(Token token, int type) throws ParserException {
         if (!token.isOperator()) {
             throw new OperatorExpectedException(token.getRow(), token.getColumn());
         }
