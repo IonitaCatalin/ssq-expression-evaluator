@@ -16,12 +16,22 @@ public class BigInt implements Comparable<BigInt>{
     public BigInt(){
         numberOfDigits = 0;
         value = new int[0];
+
+        assert this.isValid();
     }
 
     public BigInt(String val) throws MaximumNumberOfDecimalExceededException, InvalidNumberFormatException {
+        assert val != null;
 
         if(val.length() > MAX_NUMBER_OF_DIGITS){
             throw new MaximumNumberOfDecimalExceededException();
+        }
+
+        while(val.startsWith("0")){
+            val = val.substring(1);
+        }
+        if(val.equals("")){
+            val = "0";
         }
 
         //Alocate the memmory
@@ -36,16 +46,26 @@ public class BigInt implements Comparable<BigInt>{
 
             value[val.length() - i - 1] = digit;
         }
+
+        assert this.isValid();
+        assert this.value.length == val.replaceFirst("^0+(?!$)", "").length();
+        assert this.numberOfDigits == val.replaceFirst("^0+(?!$)", "").length();
     }
 
     public BigInt(int[] value){
         this.value = value;
         this.numberOfDigits = value.length;
+
+        assert this.isValid();
     }
 
     public BigInt(BigInt b){
+        assert b.isValid();
+
         this.value = b.getValue();
         this.numberOfDigits = b.getNumberOfDigits();
+
+        assert this.isValid();
     }
 
     public BigInt(int i){
@@ -60,9 +80,14 @@ public class BigInt implements Comparable<BigInt>{
             i = i / 10;
             counter++;
         }
+
+        assert this.isValid();
+        assert Objects.equals(this.convertToString(), String.valueOf(i));
     }
 
     public BigInt add(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+        assert this.isValid();
+        assert n.isValid();
 
         int minDigits = Math.min(this.numberOfDigits, n.getNumberOfDigits());
         int maxDigits = Math.max(this.numberOfDigits, n.getNumberOfDigits());
@@ -113,11 +138,19 @@ public class BigInt implements Comparable<BigInt>{
             value = String.valueOf((carry)).concat(value);
         }
 
-        return new BigInt(value);
+        BigInt b = new BigInt(value);
+
+        assert b.isValid();
+        assert b.compareTo(this) >= 0;
+        assert b.compareTo(n) >= 0;
+
+        return b;
 
     }
 
     public BigInt subtract(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
+        assert this.isValid();
+        assert n.isValid();
 
         if(this.compareTo(n) < 0){
             throw new NegativeValueException();
@@ -159,10 +192,18 @@ public class BigInt implements Comparable<BigInt>{
             str = str.substring(1);
         }
 
-        return new BigInt(str);
+        BigInt b = new BigInt(str);
+
+        assert b.isValid();
+        assert b.compareTo(this) <= 0;
+
+        return b;
     }
 
     public BigInt multiply(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+        assert this.isValid();
+        assert n.isValid();
+
         int len1 = this.numberOfDigits;
         int len2 = n.getNumberOfDigits();
 
@@ -215,10 +256,16 @@ public class BigInt implements Comparable<BigInt>{
             s = s.concat(String.valueOf(result[i--]));
         }
 
-        return new BigInt(s);
+        BigInt b = new BigInt(s);
+        assert b.isValid();
+        assert (b.compareTo(this) >= 0) || (b.compareTo(new BigInt(0)) == 0 && (this.compareTo(new BigInt(0)) == 0 || n.compareTo(new BigInt(0)) == 0));
+        assert (b.compareTo(n) >= 0) || (b.compareTo(new BigInt(0)) == 0 && (this.compareTo(new BigInt(0)) == 0 || n.compareTo(new BigInt(0)) == 0));
+
+        return b;
     }
 
     public BigInt divide(int divisor) throws DivisionByZeroException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+        assert this.isValid();
 
         if(divisor == 0){
             throw new DivisionByZeroException();
@@ -240,10 +287,17 @@ public class BigInt implements Comparable<BigInt>{
             }
         }
 
+        BigInt b = new BigInt(result.substring(i));
+
+        assert b.isValid();
+        assert b.compareTo(this) <= 0;
         return new BigInt(result.substring(i));
     }
 
     public BigInt divide(BigInt divisor) throws DivisionByZeroException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
+        assert this.isValid();
+        assert divisor.isValid();
+
         BigInt b = new BigInt(this);
 
         if(divisor.compareTo(new BigInt(0)) == 0) {
@@ -257,12 +311,16 @@ public class BigInt implements Comparable<BigInt>{
             count = count.add(new BigInt(1));
         }
 
+        assert count.isValid();
+        assert count.compareTo(this) <= 0;
         return count;
     }
 
     public BigInt pow(int power) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+        assert this.isValid();
+
         if(power == 0){
-            return new BigInt("1");
+            return new BigInt(1);
         }
 
         BigInt b = new BigInt(this);
@@ -271,10 +329,15 @@ public class BigInt implements Comparable<BigInt>{
             b = new BigInt(b.multiply(this));
         }
 
+        assert b.isValid();
+        assert b.compareTo(this) >= 0;
         return b;
     }
 
     public BigInt pow(BigInt power) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
+        assert this.isValid();
+        assert power.isValid();
+
         if(power.compareTo(new BigInt(0)) == 0 ) {
             return new BigInt(1);
         }
@@ -286,10 +349,14 @@ public class BigInt implements Comparable<BigInt>{
             power = power.subtract(new BigInt(1));
         }
 
+        assert b.isValid();
+        assert b.compareTo(this) >= 0;
         return b;
     }
 
     public BigInt sqrt(int root) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+        assert this.isValid();
+
         for(int i = 1; i < Integer.MAX_VALUE; i++){
             BigInt b = new BigInt(i);
             if(b.pow(root).compareTo(this) > 0){
@@ -301,6 +368,7 @@ public class BigInt implements Comparable<BigInt>{
     }
 
     public BigInt sqrt(BigInt root) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
+        assert this.isValid();
 
         for(int i = 1; i < Integer.MAX_VALUE; i++){
             BigInt b = new BigInt(i);
@@ -323,17 +391,23 @@ public class BigInt implements Comparable<BigInt>{
     }
 
     public String convertToString(){
+        assert this.isValid();
         String s = "";
 
         for (int j : value) {
             s = String.valueOf(j).concat(s);
         }
 
+        assert s.length() == this.numberOfDigits;
+        assert s.length() == this.value.length;
         return s;
     }
 
     @Override
     public int compareTo(BigInt b){
+        assert this.isValid();
+        assert b.isValid();
+
         if(this.numberOfDigits < b.numberOfDigits){
             return -1;
         }else if(this.numberOfDigits > b.numberOfDigits){
@@ -354,6 +428,8 @@ public class BigInt implements Comparable<BigInt>{
 
     @Override
     public boolean equals(Object o) {
+        assert this.isValid();
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BigInt BigInt = (BigInt) o;
@@ -362,6 +438,8 @@ public class BigInt implements Comparable<BigInt>{
 
     @Override
     public int hashCode() {
+        assert this.isValid();
+
         int result = Objects.hash(numberOfDigits);
         result = 31 * result + Arrays.hashCode(value);
         return result;
@@ -369,6 +447,25 @@ public class BigInt implements Comparable<BigInt>{
 
     @Override
     public String toString() {
+        assert this.isValid();
+
         return this.convertToString();
+    }
+
+    private boolean isValid(){
+        if(this.numberOfDigits > MAX_NUMBER_OF_DIGITS){
+            return false;
+        }
+        if(this.value.length > MAX_NUMBER_OF_DIGITS){
+            return false;
+        }
+
+        for (int j : this.value) {
+            if (j < 0 || j > 9) {
+                return false;
+            }
+        }
+
+        return this.value.length == this.numberOfDigits;
     }
 }
