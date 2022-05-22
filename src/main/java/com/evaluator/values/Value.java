@@ -1,5 +1,6 @@
 package com.evaluator.values;
 
+import com.evaluator.utils.Conditions;
 import com.evaluator.types.BigInt;
 import com.evaluator.types.exceptions.InvalidNumberFormatException;
 import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
@@ -47,7 +48,15 @@ public class Value {
             this.name = var.name;
             this.valueAsString = var.valueAsString;
             this.valueAsNumber = var.valueAsNumber == null ? null : new BigInt(var.valueAsNumber.toString());
+
+            assert Conditions.areEqual(this.type, var.type);
+            assert Conditions.areEqual(this.name, var.name);
+            assert Conditions.areEqual(Objects.requireNonNull(this.valueAsNumber), var.valueAsNumber);
+            assert Conditions.areEqual(this.valueAsString, var.valueAsString);
+
         }
+
+
     }
 
     public String asString() {
@@ -67,10 +76,13 @@ public class Value {
     }
 
 
-    public Value setValue(BigInt value) {
+    public void setValue(BigInt value) {
         this.valueAsNumber = value;
         setType(ValueType.NUMBER);
-        return null;
+
+        assert Conditions.areEqual(this.valueAsNumber, value);
+        assert Conditions.areEqual(this.type, ValueType.NUMBER);
+
     }
 
     public String getName() {
@@ -79,6 +91,8 @@ public class Value {
 
     public void setName(String name) {
         this.name = name;
+
+        assert Conditions.areEqual(this.name, name);
     }
 
     @Override

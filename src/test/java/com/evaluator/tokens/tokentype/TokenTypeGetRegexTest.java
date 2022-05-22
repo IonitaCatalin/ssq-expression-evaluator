@@ -19,7 +19,7 @@ public class TokenTypeGetRegexTest {
         MockedStatic<Operator> mockedOperator = mockStatic(Operator.class);
 
         mockedOperator.when(Operator::getOperatorRegex).thenReturn("~some-regex~");
-        assertEquals(TokenType.OPERATOR.getRegex(new Parser()),
+        assertEquals(TokenType.OPERATOR.getRegex(),
                 "~some-regex~");
 
         mockedOperator.close();
@@ -27,7 +27,7 @@ public class TokenTypeGetRegexTest {
 
     @Test
     public void testGetRegexForNonOperator() {
-        assertEquals(TokenType.NUMBER.getRegex(new Parser()),
+        assertEquals(TokenType.NUMBER.getRegex(),
                 "(?:\\b[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+\\b)(?:[eE][-+]?[0-9]+\\b)?");
     }
 }

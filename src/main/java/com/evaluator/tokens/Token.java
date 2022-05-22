@@ -1,6 +1,7 @@
 package com.evaluator.tokens;
 
 import com.evaluator.operators.Operator;
+import com.evaluator.utils.Conditions;
 import com.evaluator.types.BigInt;
 import com.evaluator.types.exceptions.InvalidNumberFormatException;
 import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
@@ -39,11 +40,19 @@ public class Token {
 
     public Token(TokenType type, String text, Value value, int row, int column)
             throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+
+        // Preconditions
+        assert row > 0;
+        assert column > 0;
+        assert Conditions.isNotNull(value);
+
         this.type = type == null ? TokenType.NOMATCH : type;
         this.text = text;
         this.row = row;
         this.column = column;
         this.value = new Value(value);
+
+
     }
 
 
@@ -94,18 +103,27 @@ public class Token {
 
 
     public void setValue(Value value)
-            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+            throws InvalidNumberFormatException,
+            MaximumNumberOfDecimalExceededException {
+
         this.value.set(value);
+
+        assert Conditions.areEqual(this.value, value);
     }
 
 
     public void setText(String text) {
         this.text = text;
+
+        assert Conditions.areEqual(this.text, text);
     }
 
     public boolean operatorEquals(Operator... operators) {
+
+        assert Conditions.isNotNull(operators);
+
         boolean result = false;
-        if (text != null && operators != null) {
+        if (text != null) {
             for (Operator operator : operators) {
                 result = operator != null && text.equals(operator.getText());
                 if (result) {

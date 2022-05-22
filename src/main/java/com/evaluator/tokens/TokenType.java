@@ -22,7 +22,7 @@ public enum TokenType {
         this.regex = regex;
     }
 
-    public String getRegex(Parser parser) {
+    public String getRegex() {
         if (this.equals(OPERATOR)) {
             return Operator.getOperatorRegex();
         } else {
