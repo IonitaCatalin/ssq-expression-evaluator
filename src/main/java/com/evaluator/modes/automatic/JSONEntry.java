@@ -38,6 +38,7 @@ public class JSONEntry {
             exprInput += entry.getKey() + "=" + entry.getValue() + ";";
         }
         exprInput += expr;
+        assert exprInput.length() >= expr.length();
         return exprInput;
     }
 

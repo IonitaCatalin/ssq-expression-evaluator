@@ -46,6 +46,8 @@ public class AutomaticMode extends AbstractSolver implements RuntimeMode {
             jsonEntries = getJSONFromFile();
             List<String> expressions = new ArrayList<>();
             for (JSONEntry entry : jsonEntries) {
+                assert entry != null;
+                assert expressions.size() == mapping.size();
                 String expressionInput = entry.getExpressionInput();
                 expressions.add(expressionInput);
                 mapping.put(expressionInput, entry);
@@ -59,9 +61,7 @@ public class AutomaticMode extends AbstractSolver implements RuntimeMode {
     }
 
     public void displayOutputToFile() {
-        if (mapping == null) {
-            return;
-        }
+        assert mapping != null;
         Collection<JSONEntry> entries = mapping.values();
         String json = gson.toJson(entries);
         BufferedWriter writer = null;
@@ -73,7 +73,6 @@ public class AutomaticMode extends AbstractSolver implements RuntimeMode {
             e.printStackTrace();
             System.out.println("Error writing to file...");
         }
-
     }
 
     @Override
@@ -81,6 +80,7 @@ public class AutomaticMode extends AbstractSolver implements RuntimeMode {
         List<String> expressions = getAllExpr();
         for (String currentExpr : expressions) {
             try {
+                assert mapping.get(currentExpr) != null;
                 Value result = solveExpression(currentExpr);
                 mapping.get(currentExpr).setResult(result);
             } catch (ParserException | DivisionByZeroException | NegativeValueException | MaximumNumberOfDecimalExceededException | InvalidNumberFormatException e) {
