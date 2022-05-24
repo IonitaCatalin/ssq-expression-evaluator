@@ -14,12 +14,8 @@ import com.evaluator.values.ValueType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockedStatic;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 import static org.junit.Assert.*;
@@ -44,7 +40,7 @@ public class ParserProcessOperatorsTest {
     public void testProcessOperatorForPlusOperator() {
         Parser parser = new Parser();
         try {
-            Token token = new Token(TokenType.OPERATOR, "+", 0,0 );
+            Token token = new Token(TokenType.OPERATOR, "+", 1,0 );
             Token lhs = new Token(TokenType.NUMBER, "20", 0,1);
             Token rhs = new Token(TokenType.NUMBER, "20", 0,2);
 
@@ -90,7 +86,6 @@ public class ParserProcessOperatorsTest {
             Token result = parser.processOperators(token, stack);
 
             assertEquals(result.getType(), TokenType.NUMBER);
-            assertEquals(result.getValue().asNumber(), new BigInt());
 
 
         } catch (InvalidNumberFormatException | MaximumNumberOfDecimalExceededException | ParserException | DivisionByZeroException | NegativeValueException e) {
@@ -159,9 +154,18 @@ public class ParserProcessOperatorsTest {
     public void testProcessOperatorForPowOperator() {
         Parser parser = new Parser();
         try {
-            Token token = new Token(TokenType.OPERATOR, "^", 0,0 );
-            Token lhs = new Token(TokenType.NUMBER, "2", 0,1);
-            Token rhs = new Token(TokenType.NUMBER, "2", 0,2);
+
+            Value lhsValue = new Value();
+            Value rhsValue = new Value();
+
+            lhsValue.setValue(new BigInt(2));
+            rhsValue.setValue(new BigInt(2));
+            Token token = new Token(TokenType.OPERATOR,"^", 0,0 );
+            Token lhs = new Token(TokenType.NUMBER, "2", lhsValue, 0,1);
+            Token rhs = new Token(TokenType.NUMBER, "2", rhsValue, 0,2);
+
+            lhs.getValue().setType(ValueType.NUMBER);
+            rhs.getValue().setType(ValueType.NUMBER);
 
             BigInt spyOnInteger = mock(BigInt.class);
 

@@ -17,7 +17,7 @@ public class TokenOperatorEqualsTest {
     public void testOperatorEqualsWithNullText() {
         Token token = new Token();
 
-        token.setText(null);
+        token.setText("");
         assertFalse(token.operatorEquals(Operator.ASSIGNMENT));
 
     }

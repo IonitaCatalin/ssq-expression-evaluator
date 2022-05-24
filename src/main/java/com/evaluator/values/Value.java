@@ -49,10 +49,6 @@ public class Value {
             this.valueAsString = var.valueAsString;
             this.valueAsNumber = var.valueAsNumber == null ? null : new BigInt(var.valueAsNumber.toString());
 
-            assert Conditions.areEqual(this.type, var.type);
-            assert Conditions.areEqual(this.name, var.name);
-            assert Conditions.areEqual(Objects.requireNonNull(this.valueAsNumber), var.valueAsNumber);
-            assert Conditions.areEqual(this.valueAsString, var.valueAsString);
 
         }
 

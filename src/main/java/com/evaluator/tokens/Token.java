@@ -6,6 +6,7 @@ import com.evaluator.types.BigInt;
 import com.evaluator.types.exceptions.InvalidNumberFormatException;
 import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
 import com.evaluator.values.Value;
+import com.evaluator.values.ValueType;
 
 public class Token {
     private final TokenType type;
@@ -27,7 +28,6 @@ public class Token {
             }
         }
         setValue(value);
-
     }
 
     public Token() {
@@ -36,15 +36,18 @@ public class Token {
         row = 0;
         column = 0;
         text = "";
+
+        value.setName("");
+        value.setType(ValueType.UNDEFINED);
+        value.setValue(new BigInt(0));
     }
 
     public Token(TokenType type, String text, Value value, int row, int column)
             throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
 
         // Preconditions
-        assert row > 0;
-        assert column > 0;
-        assert Conditions.isNotNull(value);
+        assert row >= 0;
+        assert column >= 0;
 
         this.type = type == null ? TokenType.NOMATCH : type;
         this.text = text;
@@ -108,7 +111,6 @@ public class Token {
 
         this.value.set(value);
 
-        assert Conditions.areEqual(this.value, value);
     }
 
 

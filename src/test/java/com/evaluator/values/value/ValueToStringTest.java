@@ -26,10 +26,10 @@ public class ValueToStringTest {
     public void testToStringForNonString() {
         Value value = new Value();
 
-        value.setValue(null);
+        value.setValue(new BigInt(0));
         value.setType(ValueType.UNDEFINED);
         value.setName("some-undefined");
 
-        assertEquals(value.toString(), "type = UNDEFINED | value = null | text = null");
+        assertEquals(value.toString(), "type = UNDEFINED | value = 0 | text = null");
     }
 }
