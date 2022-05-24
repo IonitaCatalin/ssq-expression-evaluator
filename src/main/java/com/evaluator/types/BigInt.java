@@ -76,6 +76,9 @@ public class BigInt implements Comparable<BigInt>{
         int counter = 0;
 
         while(i > 0){
+            assert i > 0;
+            assert counter + String.valueOf(i).length() == length;
+
             this.value[counter] = i % 10;
             i = i / 10;
             counter++;
@@ -97,6 +100,9 @@ public class BigInt implements Comparable<BigInt>{
         String value = "";
 
         for(int i = 0; i < minDigits; i++){
+            assert i < minDigits;
+            assert value.length() == i;
+
             int digit = this.value[i] + n.value[i] + carry;
             carry = 0;
 
@@ -110,6 +116,10 @@ public class BigInt implements Comparable<BigInt>{
 
         if(this.numberOfDigits > n.numberOfDigits) {
             for(int i = minDigits; i < maxDigits; i++){
+                assert i >= minDigits;
+                assert i < maxDigits;
+                assert value.length() == i;
+
                 int digit = this.value[i] + carry;
                 carry = 0;
 
@@ -122,6 +132,9 @@ public class BigInt implements Comparable<BigInt>{
             }
         } else {
             for(int i = minDigits; i< maxDigits; i++){
+                assert i >= minDigits;
+                assert i < maxDigits;
+                assert value.length() == i;
                 int digit = n.getValue()[i] + carry;
                 carry = 0;
 
@@ -163,6 +176,9 @@ public class BigInt implements Comparable<BigInt>{
         int carry = 0;
 
         for (int i = 0; i < n2; i++) {
+            assert i < n2;
+            assert str.length() == i;
+
             int sub = (this.value[i] - n.getValue()[i] - carry);
 
             if (sub < 0) {
@@ -176,6 +192,10 @@ public class BigInt implements Comparable<BigInt>{
         }
 
         for (int i = n2; i < n1; i++) {
+            assert i >= n2;
+            assert i < n1;
+            assert str.length() == i;
+
             int sub = (this.value[i] - carry);
             if (sub < 0) {
                 sub = sub + 10;
@@ -218,12 +238,16 @@ public class BigInt implements Comparable<BigInt>{
 
         for (int i = 0; i < len1; i++)
         {
+            assert i < len1;
+
             int carry = 0;
             int n1 = this.value[i];
             i_n2 = 0;
 
             for (int j = 0; j < len2; j++)
             {
+                assert j < len2;
+
                 int n2 = n.getValue()[j];
                 int sum = n1 * n2 + result[i_n1 + i_n2] + carry;
 
@@ -373,7 +397,10 @@ public class BigInt implements Comparable<BigInt>{
         for(int i = 1; i < Integer.MAX_VALUE; i++){
             BigInt b = new BigInt(i);
             if(b.pow(root).compareTo(this) > 0){
-                return new BigInt(i-1);
+                BigInt result = new BigInt(i-1);
+
+                assert result.isValid();
+                return result;
             }
         }
 
@@ -421,6 +448,7 @@ public class BigInt implements Comparable<BigInt>{
             }else if(this.value[i] > b.value[i]){
                 return 1;
             }
+            assert this.value[i] == b.value[i];
         }
 
         return 0;
