@@ -70,6 +70,7 @@ public class BigInt implements Comparable<BigInt>{
 
     public BigInt(int i){
         int length = String.valueOf(i).length();
+        int temp = i;
         this.value = new int[length];
         this.numberOfDigits = length;
 
@@ -85,7 +86,7 @@ public class BigInt implements Comparable<BigInt>{
         }
 
         assert this.isValid();
-        assert Objects.equals(this.convertToString(), String.valueOf(i));
+        assert Objects.equals(this.convertToString(), String.valueOf(temp));
     }
 
     public BigInt add(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
