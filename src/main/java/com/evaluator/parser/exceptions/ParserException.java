@@ -1,5 +1,10 @@
 package com.evaluator.parser.exceptions;
 
+/**
+ * The exception class for parser exception error
+ *
+ * @author Ionita Mihail-Catalin
+ */
 public class ParserException extends Exception {
 
     private int row;

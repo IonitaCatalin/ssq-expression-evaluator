@@ -1,7 +1,6 @@
 package com.evaluator.modes.interactive;
 
 import com.evaluator.modes.AbstractSolver;
-import com.evaluator.modes.Mode;
 import com.evaluator.modes.RuntimeMode;
 import com.evaluator.parser.exceptions.ParserException;
 import com.evaluator.types.exceptions.DivisionByZeroException;
@@ -13,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * @author Popa Stefan
+ * @since 01.05.2022
+ */
 public class InteractiveMode extends AbstractSolver implements RuntimeMode {
 
     @Override

@@ -8,6 +8,12 @@ import com.evaluator.types.exceptions.NegativeValueException;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * The BigInt class
+ *
+ * @author Craciun Mihai-Cosmin
+ * @since 01.05.2022
+ */
 public class BigInt implements Comparable<BigInt>{
     private final int numberOfDigits;
     private final int[] value;

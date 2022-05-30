@@ -7,13 +7,34 @@ import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
 
 import java.util.Objects;
 
+/**
+ * @description Value class, holds the textual and integer representation
+ * of a token.
+ *
+ * @author Ionita Mihail-Catalin
+ * @since 01.05.2022
+ */
 public class Value {
 
+
+    /**
+     * The type of the value, UNDEFINED by default
+     */
     private ValueType type = ValueType.UNDEFINED;
 
+    /**
+     * The name of the value
+     */
     private String name;
 
+    /**
+     * The value as a BigInt
+     */
     private BigInt valueAsNumber = null;
+
+    /**
+     * The value as a String
+     */
     private String valueAsString = null;
 
     public Value() {
@@ -34,7 +55,6 @@ public class Value {
         set(var);
     }
 
-
     public final Value clear() {
         this.type = ValueType.UNDEFINED;
         this.valueAsNumber = null;
@@ -42,7 +62,9 @@ public class Value {
     }
 
     public final void set(Value var)
-            throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+            throws InvalidNumberFormatException,
+            MaximumNumberOfDecimalExceededException
+    {
         if (var != null) {
             this.type = var.type;
             this.name = var.name;
@@ -51,8 +73,6 @@ public class Value {
 
 
         }
-
-
     }
 
     public String asString() {

@@ -4,6 +4,10 @@ import com.evaluator.values.Value;
 
 import java.util.Map;
 
+/**
+ * @author Popa Stefan
+ * @since 01.05.2022
+ */
 public class JSONEntry {
     private Value result;
 

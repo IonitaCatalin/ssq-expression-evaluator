@@ -7,6 +7,12 @@ import com.evaluator.values.ValueType;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * @description Helper class used for adding assertion with specific conditions
+ *
+ * @author Ionita Mihail-Catalin
+ * @since 01.05.2022
+ */
 public class Conditions {
 
     public static boolean areOperandsNumeric(Token lhs, Token rhs) {
