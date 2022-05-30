@@ -8,6 +8,12 @@ import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
 import com.evaluator.values.Value;
 import com.evaluator.values.ValueType;
 
+/**
+ * Token class, used for representing tokens in the parser.
+ *
+ * @author Ionita Mihail-Catalin
+ * @since 01.05.2022
+ */
 public class Token {
     private final TokenType type;
 

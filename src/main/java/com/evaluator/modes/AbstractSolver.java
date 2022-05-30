@@ -11,9 +11,20 @@ import com.evaluator.values.Value;
 
 import java.util.List;
 
+/**
+ * The mode enum, used for representing the available modes for the solver
+ *
+ * @author Popa Stefan
+ * @since 01.05.2022
+ */
 public abstract class AbstractSolver {
     public Value solveExpression(String expression)
-            throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException, DivisionByZeroException {
+            throws ParserException,
+            InvalidNumberFormatException,
+            MaximumNumberOfDecimalExceededException,
+            NegativeValueException,
+            DivisionByZeroException
+    {
         assert expression != null;
         Main.DemoParser parser = new Main.DemoParser();
         Value value = parser.evaluate(expression);

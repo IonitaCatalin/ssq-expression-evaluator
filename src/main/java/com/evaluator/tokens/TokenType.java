@@ -1,27 +1,67 @@
 package com.evaluator.tokens;
 
 import com.evaluator.operators.Operator;
-import com.evaluator.parser.Parser;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+/**
+ * TokenType enum, represents all the acceptable types of tokens
+ *
+ * @author Ionita Mihail-Catalin
+ * @since 01.05.2022
+ */
 
 public enum TokenType {
+    /**
+     * The regex pattern for number token
+     */
     NUMBER("(?:\\b[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+\\b)(?:[eE][-+]?[0-9]+\\b)?"),
+
+    /**
+     * The regex pattern for operator token
+     */
     OPERATOR("~~dynamically-generated~~"),
+
+    /**
+     * The regex pattern for identifier token
+     */
     IDENTIFIER("[_A-Za-z][_A-Za-z0-9]*"),
+
+    /**
+     * The regex pattern for newline token
+     */
     NEWLINE("\n"),
+
+    /**
+     * The regex pattern for end-of-stream token
+     */
     EOS(";"),
+
+    /**
+     * The regex pattern for whitespaces
+     */
     WHITESPACE("[ \\t]+"),
+
+    /**
+     * The regex pattern for nomatch operator
+     */
     NOMATCH(""),
+
+    /**
+     * The regex pattern for value operator
+     */
     VALUE("");
 
+    /**
+     * The regex for a type of token
+     */
     private final String regex;
 
     TokenType(String regex) {
         this.regex = regex;
     }
 
+    /**
+     * Gets the regex for a TokenType enum
+     */
     public String getRegex() {
         if (this.equals(OPERATOR)) {
             return Operator.getOperatorRegex();
@@ -30,6 +70,12 @@ public enum TokenType {
         }
     }
 
+    /**
+     * Unescapes the escaped character from a string, including the UTF-8 characters
+     *
+     * @param str The string
+     * @return The unescaped string
+     */
     public static String unescapeString(String str) {
         if (str == null || str.trim().length() == 0) {
             return str;

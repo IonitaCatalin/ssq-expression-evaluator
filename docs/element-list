@@ -1,0 +1,12 @@
+com.evaluator
+com.evaluator.modes
+com.evaluator.modes.automatic
+com.evaluator.modes.interactive
+com.evaluator.operators
+com.evaluator.parser
+com.evaluator.parser.exceptions
+com.evaluator.tokens
+com.evaluator.types
+com.evaluator.types.exceptions
+com.evaluator.utils
+com.evaluator.values

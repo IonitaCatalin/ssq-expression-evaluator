@@ -1,7 +1,6 @@
 package com.evaluator.parser;
 
 import com.evaluator.utils.Conditions;
-import com.evaluator.modes.Mode;
 import com.evaluator.operators.Operator;
 
 import com.evaluator.parser.exceptions.BadSyntaxException;
@@ -24,27 +23,64 @@ import com.evaluator.types.exceptions.MaximumNumberOfDecimalExceededException;
 
 import com.evaluator.types.BigInt;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * Main Parser class
+ *
+ * @author Ionita Mihail-Catalin
+ * @author Popa Stefan
+ * @since 01.05.2022
+ */
+
 public class Parser {
 
+
+    /**
+     *  Default delimiter character for instructions
+     */
     public static final String DEFAULT_SPLIT_CHARACTER = ";";
+
+    /**
+     *  Default escaped pattern
+     */
     public static final String SPLIT_PATTERN = "(?=([^\\\"\\']*[\\\"\\'][^\\\"\\']*[\\\"\\'])*[^\\\"\\']*$)";
 
-    private final Mode mode = Mode.INTERACTIVE;
-
+    /**
+     * Boolean values which is true if the variables names
+     * case-sensitive or not by default it would be false
+     */
     private final boolean sensitive;
 
+    /**
+     * Pattern object
+     */
     private Pattern pattern;
 
+    /**
+     * The character delimiter for instructions,
+     * by default the ';' character is chosen
+     */
     private final String delimiter;
 
-    final Map < String,List<Token>> expTokens = new HashMap<>();
+    /**
+     * The tokens from the expression in the process of being resolved
+     */
+    final Map<String,List<Token>> expTokens = new HashMap<>();
 
-    private  Map<String, Value> variables = new TreeMap<>();
+    /**
+     * The Variables in found by the parser and their respective values
+     */
+    private Map<String, Value> variables = new TreeMap<>();
 
     public Parser() {
         sensitive = false;
@@ -52,22 +88,29 @@ public class Parser {
         clearConstants();
     }
 
+    /**
+     * Cleans the current variables in the parser
+     */
     public void clearConstants() {
         invalidatePattern();
     }
 
+    /**
+     * Preprocess the pattern to be used for matching the tokens in the expression
+     *
+     * @param parser The parsers
+     * @return The pattern used for matching the tokens
+    */
     public Pattern getPattern(Parser parser) {
         if (pattern == null) {
             StringBuilder sb = new StringBuilder();
 
-            // Invariants
             assert Conditions.isOfSize(List.of(TokenType.values()), TokenType.values().length);
 
             for (TokenType type: TokenType.values()) {
                 sb.append(String.format("|(?<%s>%s)", type.name(), type.getRegex()));
             }
 
-            //Invariants
             assert Conditions.isOfSize(List.of(TokenType.values()), TokenType.values().length);
 
             int options = parser.getCaseSensitive() ?
@@ -80,13 +123,22 @@ public class Parser {
         return pattern;
     }
 
+    /**
+     * Invalidate the pattern used for matching the tokens
+     */
     public void invalidatePattern() {
         pattern = null;
     }
 
+    /**
+     * Check if a token is of indicated type
+     *
+     * @param token The token to be checked
+     * @param type The type of the token
+     * @return boolean value
+     */
     public boolean isType(Token token, int type) throws ParserException {
 
-        // Preconditions
         assert Conditions.isNotNull(token);
 
         if (!token.isOperator()) {
@@ -99,12 +151,21 @@ public class Parser {
             throw new OperatorNotFoundException(token.getRow(), token.getColumn());
         }
 
-        //Postconditions
         assert Conditions.isNotNull(o);
 
         return o.getAssociation() == type;
     }
 
+    /**
+     * Check if the token in the top of the stack of token of expression should be
+     * removed, in general we pop of the token on top of the stack if that token
+     * has the precedence lesser or equal to the current token in the expression
+     * we are resolving
+     *
+     * @param token The token to be checked
+     * @param topOfStack The token on top of the stack
+     * @return boolean value
+     */
     private boolean shouldPopToken(Token token, Token topOfStack) throws ParserException {
 
         // Preconditions
@@ -116,9 +177,17 @@ public class Parser {
 
     }
 
+
+    /**
+     * Compare two sets of tokens, returns 0 if the tokens are equals, -1 if the precedence of
+     * the first token is less than the second and 1 otherwise.
+     *
+     * @param token1 The token that's being compared
+     * @param token2 The token that's compared against
+     * @return int value
+     */
     private int compareTokens(Token token1, Token token2) throws ParserException {
 
-        // Preconditions
         assert Conditions.isNotNull(token1);
         assert Conditions.isNotNull(token2);
 
@@ -138,16 +207,20 @@ public class Parser {
             throw new OperatorNotFoundException(token2.getRow(), token2.getColumn());
         }
 
-        // Postconditions
         assert Conditions.isNotNull(o1);
         assert Conditions.isNotNull(o2);
 
         return o1.getPrecedence() - o2.getPrecedence();
     }
 
+
+    /**
+     * Checks if the sensitive flag is enabled or not
+     */
     public boolean getCaseSensitive() {
         return sensitive;
     }
+
 
     public Value evaluate(String source)
             throws ParserException,
@@ -181,18 +254,26 @@ public class Parser {
         return value;
     }
 
-
-    public List <Token> tokenize(String input, boolean wantWhitespace)
-            throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
+    /**
+     * Matches every known token in the input
+     *
+     * @param input The input expression as a string
+     * @param wantWhitespace Flag that indicates if whitespaces should be ignored or not
+     * @return a list of tokens extracted from the expression
+     * @throws InvalidTokenException If the token is not of any known type
+     */
+    public List<Token> tokenize(String input, boolean wantWhitespace)
+            throws ParserException,
+            InvalidNumberFormatException,
+            MaximumNumberOfDecimalExceededException
+    {
 
         int offset = 0;
         int row = 1;
 
         List <Token> tokens = new ArrayList<> ();
-
         Matcher matcher = getPattern(this).matcher(input);
 
-        // Invariants
         assert Conditions.isNotNull(matcher);
 
         while (matcher.find()) {
@@ -230,10 +311,16 @@ public class Parser {
         return tokens;
     }
 
-    public List <Token> generateRPN(List <Token> tokens) throws ParserException {
+    /**
+     * Generates the reverse polish notation of the expression
+     *
+     * @param tokens The tokens of the expression
+     * @return A list of token in the reverse polish notation
+     * @throws ParenthesisCountException If the number of opening parenthesis is greater
+     * than the number of closing parenthesis or otherwise
+     */
+    public List<Token> generateRPN(List<Token> tokens) throws ParserException {
 
-
-        // Preconditions
         assert Conditions.isNotNull(tokens);
         assert Conditions.hasNElements(Collections.singletonList(tokens), 1);
 
@@ -242,7 +329,6 @@ public class Parser {
 
         int count = 0;
         for (Token token: tokens) {
-
             if (token.operatorEquals(Operator.L_PARENTHESIS)) {
                 count++;
             } else if (token.operatorEquals(Operator.R_PARENTHESIS)) {
@@ -259,7 +345,6 @@ public class Parser {
         }
 
         for (Token token: tokens) {
-
             if (!token.isOperator() && (token.isNumber() || token.isIdentifier())) {
                 outputTokens.add(token);
             } else if (token.operatorEquals(Operator.L_PARENTHESIS)) {
@@ -287,15 +372,26 @@ public class Parser {
             outputTokens.add(stack.pop());
         }
 
-        //PostConditions
         assert Conditions.isNotNull(outputTokens);
-
 
         return outputTokens;
     }
 
-    public Token processOperators(Token token, Stack <Token> stack)
-            throws ParserException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, DivisionByZeroException {
+    /**
+     * Processes an operator and its operands
+     *
+     * @param token The token to be processed
+     * @return A token
+     * @throws ParenthesisCountException If the number of opening parenthesis is greater
+     * than the number of closing parenthesis or otherwise
+     * @throws InitializationExpectedException If the token is a assignment operator but there is no right operand
+     */
+    public Token processOperators(Token token, Stack<Token> stack)
+            throws ParserException,
+            InvalidNumberFormatException,
+            MaximumNumberOfDecimalExceededException,
+            DivisionByZeroException
+    {
         Token result = null;
 
         Operator op = Operator.find(token);
@@ -373,17 +469,24 @@ public class Parser {
         return result;
     }
 
-    public Value computeRPN(List <Token> tokens)
+    /**
+     * Computes the reverse polish notation to obtain a value of the tokenized expression
+     *
+     * @param tokens A list of tokens in the reverse polish notation
+     * @return A value
+     * @throws BadSyntaxException If after the processing of the reverse polish notation
+     * there are tokens left in the stack
+     */
+    public Value computeRPN(List<Token> tokens)
             throws ParserException,
             InvalidNumberFormatException,
             MaximumNumberOfDecimalExceededException,
-            DivisionByZeroException {
-
-        // Preconditions
+            DivisionByZeroException
+    {
 
         assert Conditions.isNotNull(tokens);
 
-        Stack < Token > stack = new Stack < > ();
+        Stack <Token> stack = new Stack < > ();
         for (Token token: tokens) {
             if (token.isIdentifier()) {
                 Value value = variables.get(sensitive ? token.getText() : token.getText().toUpperCase());
@@ -410,9 +513,7 @@ public class Parser {
             throw new BadSyntaxException(stack.get(0).getRow(), stack.get(0).getColumn());
         }
 
-        //PostConditions
         assert Conditions.hasNElements(Collections.singletonList(stack), 1);
-
         return stack.size() == 0 ? new Value("empty result") : stack.pop().getValue();
 
     }

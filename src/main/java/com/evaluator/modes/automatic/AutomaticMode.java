@@ -1,7 +1,6 @@
 package com.evaluator.modes.automatic;
 
 import com.evaluator.modes.AbstractSolver;
-import com.evaluator.modes.Mode;
 import com.evaluator.modes.RuntimeMode;
 import com.evaluator.parser.exceptions.ParserException;
 import com.evaluator.types.exceptions.DivisionByZeroException;
@@ -24,6 +23,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * @author Popa Stefan
+ * @since 01.05.2022
+ */
 
 public class AutomaticMode extends AbstractSolver implements RuntimeMode {
     private List<JSONEntry> jsonEntries;
