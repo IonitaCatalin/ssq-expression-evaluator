@@ -15,8 +15,21 @@ import java.util.Objects;
  * @since 01.05.2022
  */
 public class BigInt implements Comparable<BigInt>{
+
+    /**
+     *  Value for number of digits of the number
+     */
     private final int numberOfDigits;
+
+    /**
+     *  The value represented as an array of integers where each index
+     *  represents a digit of the number starting with the last one
+     */
     private final int[] value;
+
+    /**
+     *  Static value representing a soft limit of number of digits
+     */
     private final static int MAX_NUMBER_OF_DIGITS = 100_000;
 
     public BigInt(){
@@ -95,6 +108,13 @@ public class BigInt implements Comparable<BigInt>{
         assert Objects.equals(this.convertToString(), String.valueOf(temp));
     }
 
+    /**
+     * Gets a BigInt as a parameter and returns the sum of the current value with the given parameter
+     * @param n The number to be added to the current value
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @return The sum represented as a new BigInt
+     */
     public BigInt add(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         assert this.isValid();
         assert n.isValid();
@@ -168,6 +188,14 @@ public class BigInt implements Comparable<BigInt>{
 
     }
 
+    /**
+     * Gets a BigInt as a parameter and returns the result of subtracting the given value from current value
+     * @param n The number to be subtracted from the current value
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @throws NegativeValueException in case the parameter given is bigger than current value
+     * @return The difference between this value and given parameter as a new BigInt
+     */
     public BigInt subtract(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
         assert this.isValid();
         assert n.isValid();
@@ -227,6 +255,13 @@ public class BigInt implements Comparable<BigInt>{
         return b;
     }
 
+    /**
+     * Gets a BigInt as a parameter and returns the multiplication of the current value with the given parameter
+     * @param n The number to be multiplied to the current value
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @return The multiplication represented as a new BigInt
+     */
     public BigInt multiply(BigInt n) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         assert this.isValid();
         assert n.isValid();
@@ -295,6 +330,14 @@ public class BigInt implements Comparable<BigInt>{
         return b;
     }
 
+    /**
+     * Gets a int as a parameter and returns the result of dividing the given value from current value
+     * @param divisor The number to be divided from the current value as integer
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @throws DivisionByZeroException in case the divisor is zero
+     * @return The result of division (as BigInt integer)
+     */
     public BigInt divide(int divisor) throws DivisionByZeroException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         assert this.isValid();
 
@@ -325,6 +368,14 @@ public class BigInt implements Comparable<BigInt>{
         return new BigInt(result.substring(i));
     }
 
+    /**
+     * Gets a BigInt as a parameter and returns the result of dividing the given value from current value
+     * @param divisor The number to be divided from the current value as BigInt
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @throws DivisionByZeroException in case the divisor is zero
+     * @return The result of division (as BigInt integer)
+     */
     public BigInt divide(BigInt divisor) throws DivisionByZeroException, InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
         assert this.isValid();
         assert divisor.isValid();
@@ -347,6 +398,13 @@ public class BigInt implements Comparable<BigInt>{
         return count;
     }
 
+    /**
+     * Gets an int as a parameter and returns the current value to the power of given parameter
+     * @param power The number of times the number should multiply itself
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @return The current value raised to given power represented as a new BigInt
+     */
     public BigInt pow(int power) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         assert this.isValid();
 
@@ -365,6 +423,14 @@ public class BigInt implements Comparable<BigInt>{
         return b;
     }
 
+
+    /**
+     * Gets a BigInt as a parameter and returns the current value to the power of given parameter
+     * @param power The number of times the number should multiply itself
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @return The current value raised to given power represented as a new BigInt
+     */
     public BigInt pow(BigInt power) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
         assert this.isValid();
         assert power.isValid();
@@ -385,6 +451,14 @@ public class BigInt implements Comparable<BigInt>{
         return b;
     }
 
+
+    /**
+     * Gets an int as a parameter and returns the current value to the root of given parameter
+     * @param root The root of the sqrt operation
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @return The root of the current value represented as a new BigInt
+     */
     public BigInt sqrt(int root) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException {
         assert this.isValid();
 
@@ -398,6 +472,13 @@ public class BigInt implements Comparable<BigInt>{
         return null;
     }
 
+    /**
+     * Gets an int as a parameter and returns the current value to the root of given parameter
+     * @param root The root of the sqrt operation
+     * @throws InvalidNumberFormatException in case resulting value is not valid
+     * @throws MaximumNumberOfDecimalExceededException in case resulted value have more than MAX_NUMBER_OF_DIGITS digits
+     * @return The root of the current value represented as a new BigInt
+     */
     public BigInt sqrt(BigInt root) throws InvalidNumberFormatException, MaximumNumberOfDecimalExceededException, NegativeValueException {
         assert this.isValid();
 
@@ -424,6 +505,11 @@ public class BigInt implements Comparable<BigInt>{
         return numberOfDigits;
     }
 
+
+    /**
+     * Get a string representation of the current value
+     * @return The number as string
+     */
     public String convertToString(){
         assert this.isValid();
         String s = "";
