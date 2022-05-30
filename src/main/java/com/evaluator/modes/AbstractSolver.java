@@ -12,8 +12,9 @@ import com.evaluator.values.Value;
 import java.util.List;
 
 /**
+ * High Level abstract solver for both automatic and interactive
+ * Given an expression and mapped values get the result of the computation
  * The mode enum, used for representing the available modes for the solver
- *
  * @author Popa Stefan
  * @since 01.05.2022
  */

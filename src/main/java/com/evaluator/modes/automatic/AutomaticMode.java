@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * The Facade for the automatic read from file and write output of result in file (JSON format)
  * @author Popa Stefan
  * @since 01.05.2022
  */

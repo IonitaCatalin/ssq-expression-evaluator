@@ -5,6 +5,7 @@ import com.evaluator.values.Value;
 import java.util.Map;
 
 /**
+ * Model to serialize and unserialize the expression and values mapping
  * @author Popa Stefan
  * @since 01.05.2022
  */

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
+ * The Facade for the manual read from command line and write output of result to console
  * @author Popa Stefan
  * @since 01.05.2022
  */
