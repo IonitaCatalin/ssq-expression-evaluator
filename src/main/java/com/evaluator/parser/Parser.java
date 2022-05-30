@@ -451,7 +451,7 @@ public class Parser {
 
             } else if (op.equals(Operator.ASSIGNMENT)) {
                 if (lhs.isIdentifier()) {
-                    assert Conditions.isStackSizeSufficient(stack, 1);
+                    assert Conditions.isStackSizeSufficient(stack, 0);
                     if (rhs.getValue().getType().equals(ValueType.UNDEFINED)) {
                         throw new InitializationExpectedException(rhs.getRow(), rhs.getColumn());
                     }
